@@ -16,11 +16,10 @@ final class MainTabBarController: UITabBarController {
     
     private func configureTabBarControllers(){
         let trackersVC = TrackerViewController()
-        let trackerStatisticsVC = TrackerStatisticsViewController()
-        
         let trackersNavVC = UINavigationController(rootViewController: trackersVC)
         trackersNavVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "trackers"), tag: 0)
         
+        let trackerStatisticsVC = TrackerStatisticsViewController()
         let trackerStatisticNavVc = UINavigationController(rootViewController: trackerStatisticsVC)
         trackerStatisticNavVc.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "hare"), tag: 1)
         
@@ -32,6 +31,9 @@ final class MainTabBarController: UITabBarController {
     
     private func setupMainTabBarController(){
         view.backgroundColor = .ypWhite
+        tabBar.isTranslucent = false
+        tabBar.tintColor = .ypBlue
+        tabBar.unselectedItemTintColor = .ypGray
     }
     
     private func setupNavigationBar(for navigationController: UINavigationController){
