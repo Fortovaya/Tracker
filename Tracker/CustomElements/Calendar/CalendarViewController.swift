@@ -37,12 +37,12 @@ final class CalendarViewController: UIViewController {
     }()
     
     var onDatePicked: ((Date) -> Void)?
-    //NARK; Life Cycle
+    
+    //MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        overrideUserInterfaceStyle = .light
         setupLayout()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
-        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)

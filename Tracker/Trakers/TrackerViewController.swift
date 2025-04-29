@@ -21,6 +21,23 @@ final class TrackerViewController: UIViewController {
         return imageView
     }()
     
+    private lazy var dizzyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Что будем отслеживать?"
+        label.textColor = .ypBlack
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        return label
+    }()
+    
+    private lazy var dizzyStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [dizzyImage, dizzyLabel])
+        stack.axis = .vertical
+        stack.spacing = 8
+        stack.alignment = .center
+        stack.isHidden = false
+        return stack
+    }()
+    
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "plus"), for: .normal)
@@ -88,14 +105,32 @@ final class TrackerViewController: UIViewController {
     
     //MARK: Private method
     private func configureConstraintsTrackerViewController() {
-        view.addSubview(dizzyImage)
+        view.addSubview(dizzyStackView)
         
-        [dizzyImage].disableAutoresizingMask()
+        [dizzyStackView, dizzyImage].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            dizzyImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            dizzyImage.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            dizzyImage.widthAnchor.constraint(equalToConstant: 80),
+            dizzyImage.heightAnchor.constraint(equalToConstant: 80),
+            
+            dizzyStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            dizzyStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            dizzyStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -304)
         ])
+    }
+    
+    private func setupTopNavigationBar() {
+        title = "Трекеры"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
+        let leftItemButton = UIBarButtonItem(customView: addTrackerButton)
+        navigationItem.leftBarButtonItem = leftItemButton
+        
+        let rightItemButton = UIBarButtonItem(customView: dateButton)
+        navigationItem.rightBarButtonItem = rightItemButton
     }
     
     @objc private func tapAddTrackerButton() {
@@ -113,24 +148,9 @@ final class TrackerViewController: UIViewController {
             
             let title = DateFormatter.dateFormatter.string(from: selectedDate)
             self.dateButton.setTitle(title, for: .normal)
-            self.dismiss(animated: true)
             print("Выбрана дата: \(title)")
         }
         present(calendarVC, animated: true)
-    }
-    
-    private func setupTopNavigationBar() {
-        title = "Трекеры"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        
-        let leftItemButton = UIBarButtonItem(customView: addTrackerButton)
-        navigationItem.leftBarButtonItem = leftItemButton
-        
-        let rightItemButton = UIBarButtonItem(customView: dateButton)
-        navigationItem.rightBarButtonItem = rightItemButton
     }
     
 }
