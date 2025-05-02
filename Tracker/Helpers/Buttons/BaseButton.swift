@@ -9,7 +9,7 @@ import UIKit
 final class BaseButton: UIButton {
         
     init(
-        title: TitleButtons,
+        title: Resources.TitleButtons,
         backgroundColor: UIColor = .ypBlack,
         titleColor: UIColor = .ypWhite,
         cornerRadius: CGFloat = 16,

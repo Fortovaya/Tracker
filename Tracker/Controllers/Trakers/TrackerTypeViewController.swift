@@ -30,7 +30,7 @@ final class TrackerTypeViewController: BaseController {
     override func viewDidLoad(){
         super.viewDidLoad()
         configurationTrackerTypeView()
-        setCenteredInlineTitle(title: ScreenTitles.createTracker)
+        setCenteredInlineTitle(title: .createTracker)
     }
     //MARK: Private Methods
     private func configurationTrackerTypeView(){

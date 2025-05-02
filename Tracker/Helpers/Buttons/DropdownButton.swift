@@ -13,7 +13,7 @@ final class DropdownButton: UIButton {
     private lazy var contentStack = UIStackView()
     
     init(
-        title: TitleButtons,
+        title: Resources.TitleButtons,
         font: UIFont = .systemFont(ofSize: 17, weight: .regular),
         titleColor: UIColor = .ypBlack,
         backgroundColor: UIColor = .ypBackgroundTF,
