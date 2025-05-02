@@ -4,19 +4,31 @@
 //
 //  Created by Алина on 29.04.2025.
 //
-
-enum Weekday: Int, CaseIterable {
+enum WeekDay: Int, CaseIterable {
     case monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday
     
-    var displayName: String {
+    var fullName: String {
         switch self {
-        case .monday:    return "Пн"
-        case .tuesday:   return "Вт"
+        case .monday: return "Понедельник"
+        case .tuesday: return "Вторник"
+        case .wednesday: return "Среда"
+        case .thursday: return "Четверг"
+        case .friday: return "Пятница"
+        case .saturday: return "Суббота"
+        case .sunday: return "Воскресенье"
+        }
+        
+    }
+    
+    var shortName: String {
+        switch self {
+        case .monday: return "Пн"
+        case .tuesday: return "Вт"
         case .wednesday: return "Ср"
-        case .thursday:  return "Чт"
-        case .friday:    return "Пт"
-        case .saturday:  return "Сб"
-        case .sunday:    return "Вс"
+        case .thursday: return "Чт"
+        case .friday: return "Пт"
+        case .saturday: return "Сб"
+        case .sunday: return "Вс"
         }
     }
 }

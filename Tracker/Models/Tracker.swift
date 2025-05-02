@@ -13,5 +13,5 @@ struct Tracker {
     let nameTrackers: String
     let colorTrackers: UIColor
     let emojiTrackers: String
-    let scheduleTrackers: Set<Weekday>
+    let scheduleTrackers: Set<WeekDay>
 }
