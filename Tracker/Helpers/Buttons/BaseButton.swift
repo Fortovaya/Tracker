@@ -1,0 +1,51 @@
+//
+//  BaseButton.swift
+//  Tracker
+//
+//  Created by Алина on 02.05.2025.
+//
+import UIKit
+
+final class BaseButton: UIButton {
+        
+    init(
+        title: TitleButtons,
+        backgroundColor: UIColor = .ypBlack,
+        titleColor: UIColor = .ypWhite,
+        cornerRadius: CGFloat = 16,
+        height: CGFloat = 60,
+        target: Any?,
+        action: Selector
+    ) {
+        super.init(frame: .zero)
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.heightAnchor.constraint(equalToConstant: height).isActive = true
+        
+        self.backgroundColor = backgroundColor
+        self.layer.cornerRadius = cornerRadius
+        
+        self.setTitle(title.rawValue, for: .normal)
+        self.accessibilityLabel = title.rawValue
+        self.setTitleColor(titleColor, for: .normal)
+        self.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        
+        self.contentHorizontalAlignment = .center
+        self.contentVerticalAlignment   = .center
+        self.titleLabel?.textAlignment  = .center
+        
+        self.addTarget(target, action: action, for: .touchUpInside)
+    }
+    
+    override var isHighlighted: Bool {
+        didSet {
+            alpha = isHighlighted ? 0.5 : 1.0
+        }
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        assertionFailure("init(coder:) has not been implemented")
+        return nil
+    }
+}
+
