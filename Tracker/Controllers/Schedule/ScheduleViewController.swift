@@ -7,9 +7,9 @@
 import UIKit
 
 final class ScheduleViewController: BaseController {
-    
+    //MARK: - Delegate
     weak var delegate: ScheduleViewControllerDelegate?
-    
+    //MARK: - Private lazy var
     private lazy var dayViews: [UIView] = []
     private lazy var switches: [UISwitch] = []
     private lazy var selectedDays: Set<WeekDay> = []
@@ -29,13 +29,13 @@ final class ScheduleViewController: BaseController {
     
     private lazy var doneButton = BaseButton(title: .done, target: self,
                                              action: #selector(didTapDoneButton))
-    
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDays()
         setupScheduleViewController()
     }
-    
+    //MARK: - Private Method
     private func makeDayNameLabel(for day: WeekDay) -> UILabel {
         let label = UILabel()
         label.text = day.fullName
