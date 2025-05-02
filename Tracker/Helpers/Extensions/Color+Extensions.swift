@@ -15,4 +15,5 @@ extension UIColor {
     static var ypSearchView: UIColor {UIColor(named: "#7676801F(12%)") ?? UIColor.lightGray }
     static var ypBackgroundTF: UIColor {UIColor(named: "#E6E8EB4D(30%)") ?? UIColor.lightGray }
     static var ypRed: UIColor{UIColor(named: "#F56B6C") ?? UIColor.red }
+    static var ypToggle: UIColor{UIColor(named: "#E6E8EB") ?? UIColor.lightGray }
 }
