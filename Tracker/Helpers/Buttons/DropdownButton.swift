@@ -12,6 +12,15 @@ final class DropdownButton: HighlightableButton {
     private lazy var chevron = UIImageView()
     private lazy var contentStack = UIStackView()
     
+    private lazy var secondaryLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .ypGray
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    
     init(
         title: Resources.TitleButtons,
         font: UIFont = .systemFont(ofSize: 17, weight: .regular),
@@ -29,6 +38,12 @@ final class DropdownButton: HighlightableButton {
         setupContentStack(title: title.rawValue,font: font,titleColor: titleColor,imageName: image,spacing: spacing)
         setupConstraints(horizontalInset: horizontalInset)
         setupTarget(target: target, action: action)
+    }
+    
+    override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
+        super.setTitleColor(color, for: state)
+        label.textColor = color
+        chevron.tintColor = color
     }
         
     // MARK: - Private Methods
@@ -60,7 +75,12 @@ final class DropdownButton: HighlightableButton {
         contentStack.isUserInteractionEnabled = false
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         
-        contentStack.addArrangedSubview(label)
+        let labelsStack = UIStackView(arrangedSubviews: [label, secondaryLabel])
+        labelsStack.axis = .vertical
+        labelsStack.spacing = 2
+        
+        
+        contentStack.addArrangedSubview(labelsStack)
         contentStack.addArrangedSubview(chevron)
         
         addSubview(contentStack)
@@ -85,6 +105,10 @@ final class DropdownButton: HighlightableButton {
         self.addTarget(target, action: action, for: .touchUpInside)
     }
     
+    func setSubtitle(_ text: String) {
+        secondaryLabel.text = text
+    }
+        
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         assertionFailure("init(coder:) has not been implemented")
