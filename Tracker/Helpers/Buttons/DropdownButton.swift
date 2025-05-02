@@ -6,7 +6,7 @@
 //
 import UIKit
 
-final class DropdownButton: UIButton {
+final class DropdownButton: HighlightableButton {
     
     private lazy var label = UILabel()
     private lazy var chevron = UIImageView()
@@ -30,13 +30,7 @@ final class DropdownButton: UIButton {
         setupConstraints(horizontalInset: horizontalInset)
         setupTarget(target: target, action: action)
     }
-    
-    override var isHighlighted: Bool {
-        didSet {
-            alpha = isHighlighted ? 0.5 : 1.0
-        }
-    }
-    
+        
     // MARK: - Private Methods
     private func setupAppearance(backgroundColor: UIColor, height: CGFloat) {
         self.backgroundColor = backgroundColor

@@ -6,7 +6,7 @@
 //
 import UIKit
 
-final class BaseButton: UIButton {
+final class BaseButton: HighlightableButton {
         
     init(
         title: Resources.TitleButtons,
@@ -34,12 +34,6 @@ final class BaseButton: UIButton {
         self.titleLabel?.textAlignment  = .center
         
         self.addTarget(target, action: action, for: .touchUpInside)
-    }
-    
-    override var isHighlighted: Bool {
-        didSet {
-            alpha = isHighlighted ? 0.5 : 1.0
-        }
     }
     
     @available(*, unavailable)
