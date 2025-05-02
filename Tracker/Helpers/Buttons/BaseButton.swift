@@ -14,6 +14,8 @@ final class BaseButton: HighlightableButton {
         titleColor: UIColor = .ypWhite,
         cornerRadius: CGFloat = 16,
         height: CGFloat = 60,
+        borderColor: UIColor? = nil,
+        borderWidth: CGFloat = 0,
         target: Any?,
         action: Selector
     ) {
@@ -23,6 +25,11 @@ final class BaseButton: HighlightableButton {
         
         self.backgroundColor = backgroundColor
         self.layer.cornerRadius = cornerRadius
+        
+        if let borderColor = borderColor {
+            self.layer.borderColor = borderColor.cgColor
+            self.layer.borderWidth = borderWidth
+        }
         
         self.setTitle(title.rawValue, for: .normal)
         self.accessibilityLabel = title.rawValue

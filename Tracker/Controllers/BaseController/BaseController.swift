@@ -18,7 +18,7 @@ class BaseController: UIViewController {
         hideKeyboardWhenTappedAround()
     }
     
-    func setCenteredInlineTitle(
+    final func setCenteredInlineTitle(
         title text: Resources.ScreenTitles,
         font: UIFont = .systemFont(ofSize: 16, weight: .medium),
         color: UIColor = .ypBlack
@@ -45,7 +45,7 @@ class BaseController: UIViewController {
         view.endEditing(true)
     }
     
-    func presentPageSheet(
+    final func presentPageSheet(
         viewController: UIViewController,
         animated: Bool = true,
         transitionStyle: UIModalTransitionStyle = .coverVertical
