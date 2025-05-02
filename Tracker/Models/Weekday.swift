@@ -32,3 +32,10 @@ enum WeekDay: Int, CaseIterable {
         }
     }
 }
+
+extension WeekDay {
+    static func orderedString(from selectedDays: Set<WeekDay>) -> String {
+         let orderedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
+         return orderedDays.map { $0.shortName }.joined(separator: ", ")
+     }
+}
