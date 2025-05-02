@@ -1,0 +1,70 @@
+//
+//  UITextField+Extensions.swift
+//  Tracker
+//
+//  Created by Алина on 30.04.2025.
+//
+import UIKit
+
+enum TextFieldPlaceholder {
+    case trackerName
+    case custom(String)
+    
+    var text: String {
+        switch self {
+        case .trackerName:
+            return "Введите название трекера"
+        case .custom(let str):
+            return str
+        }
+    }
+}
+
+extension UITextField {
+    
+    static func makeClearableTextField(
+        placeholder: TextFieldPlaceholder,
+        backgroundColor: UIColor = .ypBackgroundTF,
+        placeholderColor: UIColor = .ypGray,
+        cornerRadius: CGFloat = 16
+    ) -> UITextField {
+        let textField = UITextField()
+        
+        textField.attributedPlaceholder = NSAttributedString(
+            string: placeholder.text,
+            attributes: [NSAttributedString.Key.foregroundColor: placeholderColor]
+        )
+        
+        textField.backgroundColor = backgroundColor
+        textField.layer.cornerRadius = cornerRadius
+        textField.textColor = .ypBlack
+        textField.layer.masksToBounds = true
+        
+        let clearButton = UIButton(type: .system)
+        clearButton.setImage(UIImage(named: "xmark.circle"),for: .normal)
+        clearButton.tintColor = .ypGray
+        clearButton.sizeToFit()
+        clearButton.addTarget(textField,action: #selector(clearButtonTapped),for: .touchUpInside)
+        
+        let containerWidth = clearButton.bounds.width + 12
+        let container = UIView(frame: CGRect(x: 0, y: 0,
+                                             width: containerWidth,
+                                             height: clearButton.bounds.height))
+        
+        clearButton.frame.origin = .zero
+        container.addSubview(clearButton)
+        
+        textField.rightView = container
+        textField.rightViewMode = .whileEditing
+        
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
+        textField.leftViewMode = .always
+        
+        return textField
+    }
+    
+    @objc private func clearButtonTapped() {
+        self.text = nil
+        self.resignFirstResponder()
+    }
+}
