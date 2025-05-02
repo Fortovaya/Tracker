@@ -38,7 +38,7 @@ final class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        overrideUserInterfaceStyle = .light
         viewControllers = [
             makeTab(for: .trackers),
             makeTab(for: .statistics)
@@ -52,6 +52,9 @@ final class MainTabBarController: UITabBarController {
         tabBar.isTranslucent = false
         tabBar.tintColor = .ypBlue
         tabBar.unselectedItemTintColor = .ypGray
+        tabBar.layer.borderColor = UIColor.ypGray.cgColor
+        tabBar.layer.borderWidth = 0.5
+        tabBar.layer.masksToBounds = true
     }
     
     private func makeTab(for tab: Tab) -> UINavigationController {
@@ -65,7 +68,7 @@ final class MainTabBarController: UITabBarController {
         )
         
         navigationController.tabBarItem.tag = tab.rawValue
-        navigationController.navigationBar.isHidden = (viewController is TrackerViewController) ? false : true
+        navigationController.navigationBar.isHidden = false
         return navigationController
     }
 }
