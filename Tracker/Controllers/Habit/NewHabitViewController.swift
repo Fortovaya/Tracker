@@ -22,11 +22,16 @@ final class NewHabitViewController: BaseController {
     
     private lazy var buttonStackView = UIStackView.makeCard(topView: categoryButton, bottomView: scheduleButton)
     
-    private lazy var cancelButton = BaseButton(title: .cancel,backgroundColor:.clear,titleColor: .ypRed,
-                                               borderColor: .ypRed,
-                                               borderWidth: 1,
-                                               target: self,
-                                               action: #selector(didTapbackButton)
+    private lazy var cancelButton = BaseButton(
+        title: .cancel,
+        backgroundColor:.clear,
+        titleColor: .ypRed,
+        borderColor: .ypRed,
+        borderWidth: 1,
+        target: self,
+        action: #selector(
+            didTapCancelButton
+        )
     )
     
     private lazy var saveButton = BaseButton(title: .create, backgroundColor: .ypGray,
@@ -87,8 +92,8 @@ final class NewHabitViewController: BaseController {
         presentPageSheet(viewController: scheduleVC)
     }
     
-    @objc private func didTapbackButton(){
-        
+    @objc private func didTapCancelButton(){
+        dismissToRootModal()
     }
     
     @objc private func didTapSaveButton(){

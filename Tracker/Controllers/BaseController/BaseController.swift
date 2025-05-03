@@ -55,4 +55,12 @@ class BaseController: UIViewController {
         nav.modalTransitionStyle   = transitionStyle
         present(nav, animated: animated)
     }
+    
+    final func dismissToRootModal(animated: Bool = true, completion: (() -> Void)? = nil) {
+        var rootVC = presentingViewController
+        while let parent = rootVC?.presentingViewController {
+            rootVC = parent
+        }
+        rootVC?.dismiss(animated: animated, completion: completion)
+    }
 }

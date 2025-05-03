@@ -8,7 +8,6 @@ import UIKit
 
 final class TrackerTypeViewController: BaseController {
     //MARK: Private variables
-    
     private lazy var habitButton = BaseButton(title: .habit,
                                               target: self,
                                               action: #selector(tapHabitButton))
