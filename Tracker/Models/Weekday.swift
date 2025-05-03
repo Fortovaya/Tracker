@@ -32,7 +32,7 @@ enum WeekDay: Int, CaseIterable {
         }
     }
 }
-
+//оставила метод сортировки на случай если понадобится далее в проекте
 extension WeekDay {
     static func orderedString(from selectedDays: Set<WeekDay>) -> String {
          let orderedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }

@@ -8,7 +8,17 @@ import UIKit
 
 final class NewHabitViewController: BaseController {
     
-    private var selectedDays: Set<WeekDay> = []
+    private var selectedDays: Set<WeekDay> = [] {
+        didSet {
+            orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
+        }
+    }
+    
+    private var orderedSelectedDays: [WeekDay] = []
+    
+    private var selectedDaysString: String {
+        orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
+    }
     
     private lazy var inputTextField = UITextField.makeClearableTextField(placeholder: .trackerName)
     
@@ -103,8 +113,7 @@ final class NewHabitViewController: BaseController {
 
 extension NewHabitViewController: ScheduleViewControllerDelegate {
     func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekDay>) {
-        let daysString = WeekDay.orderedString(from: days)
-        scheduleButton.setSubtitle(daysString)
         selectedDays = days
+        scheduleButton.setSubtitle(selectedDaysString)
     }
 }
