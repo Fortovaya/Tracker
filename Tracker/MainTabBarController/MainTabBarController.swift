@@ -19,10 +19,10 @@ final class MainTabBarController: UITabBarController {
             }
         }
         
-        var imageName: String {
+        var imageName: Resources.ButtonIcons {
             switch self {
-                case .trackers: return "trackers"
-                case .statistics: return "hare"
+                case .trackers: return .trackersTabBar
+                case .statistics: return .statisticsTabBar
             }
         }
         
@@ -62,9 +62,9 @@ final class MainTabBarController: UITabBarController {
         let navigationController = UINavigationController(rootViewController: viewController)
         
         navigationController.tabBarItem = UITabBarItem(
-            title: tab.title.rawValue,
-            image: UIImage(named: tab.imageName),
-            selectedImage: UIImage(named: tab.imageName)
+            title: tab.title.text,
+            image: UIImage(named: tab.imageName.imageName),
+            selectedImage: UIImage(named: tab.imageName.imageName)
         )
         
         navigationController.tabBarItem.tag = tab.rawValue

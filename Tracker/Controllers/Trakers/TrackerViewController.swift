@@ -7,7 +7,7 @@
 import UIKit
 
 final class TrackerViewController: BaseController {
-   
+    
     //MARK: Private variable
     private var categories: [TrackerCategory] = [] // список категорий и трекеров
     private var completedTrackers: [TrackerRecord] = [] // выполненные трекеры (после нажатия на +, добавляется запись в completedTrackers
@@ -15,7 +15,7 @@ final class TrackerViewController: BaseController {
     private var currentDate: Date?
     
     private lazy var dizzyImage: UIImageView = {
-        let image = UIImage(named: "dizzy")
+        let image = UIImage(named: Resources.ImageNames.dizzy.imageName)
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -25,7 +25,7 @@ final class TrackerViewController: BaseController {
     
     private lazy var dizzyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = Resources.Labels.dizzyLabel.text
         label.textColor = .ypBlack
         label.font = .systemFont(ofSize: 12, weight: .medium)
         return label
@@ -42,7 +42,7 @@ final class TrackerViewController: BaseController {
     
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "plus"), for: .normal)
+        button.setImage(UIImage(named: Resources.ButtonIcons.plus.imageName), for: .normal)
         button.addTarget(self, action: #selector(tapAddTrackerButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -85,7 +85,7 @@ final class TrackerViewController: BaseController {
         searchTextField.layer.masksToBounds = true
         
         searchTextField.attributedPlaceholder = NSAttributedString(
-            string: "Поиск",
+            string: Resources.Labels.searchPlaceholder.text,
             attributes: [
                 .foregroundColor: UIColor.ypGray,
                 .font: UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -119,7 +119,7 @@ final class TrackerViewController: BaseController {
     }
     
     private func setupTopNavigationBar() {
-        title = "Трекеры"
+        title = Resources.ScreenTitles.tracker.text
         navigationController?.navigationBar.prefersLargeTitles = true
         
         navigationItem.searchController = searchController

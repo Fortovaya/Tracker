@@ -27,7 +27,7 @@ class BaseController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         
         let label = UILabel()
-        label.text = text.rawValue
+        label.text = text.text
         label.font = font
         label.textColor = color
         label.textAlignment = .center

@@ -35,7 +35,7 @@ final class DropdownButton: HighlightableButton {
     ) {
         super.init(frame: .zero)
         setupAppearance( backgroundColor: backgroundColor,height: height)
-        setupContentStack(title: title.rawValue,font: font,titleColor: titleColor,imageName: image,spacing: spacing)
+        setupContentStack(title: title.text,font: font,titleColor: titleColor,imageName: image,spacing: spacing)
         setupConstraints(horizontalInset: horizontalInset)
         setupTarget(target: target, action: action)
     }

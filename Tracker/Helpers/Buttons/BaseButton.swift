@@ -31,8 +31,8 @@ final class BaseButton: HighlightableButton {
             self.layer.borderWidth = borderWidth
         }
         
-        self.setTitle(title.rawValue, for: .normal)
-        self.accessibilityLabel = title.rawValue
+        self.setTitle(title.text, for: .normal)
+        self.accessibilityLabel = title.text
         self.setTitleColor(titleColor, for: .normal)
         self.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         

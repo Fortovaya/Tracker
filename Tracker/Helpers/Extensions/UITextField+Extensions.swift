@@ -6,27 +6,14 @@
 //
 import UIKit
 
-enum TextFieldPlaceholder {
-    case trackerName
-    case custom(String)
-    
-    var text: String {
-        switch self {
-        case .trackerName:
-            return "Введите название трекера"
-        case .custom(let str):
-            return str
-        }
-    }
-}
-
 extension UITextField {
     
     static func makeClearableTextField(
         placeholder: TextFieldPlaceholder,
         backgroundColor: UIColor = .ypBackgroundTF,
         placeholderColor: UIColor = .ypGray,
-        cornerRadius: CGFloat = 16
+        cornerRadius: CGFloat = 16,
+        clearButtonImage: UIImage? = UIImage(named: "xmark.circle")
     ) -> UITextField {
         let textField = UITextField()
         

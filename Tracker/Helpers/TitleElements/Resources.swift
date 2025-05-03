@@ -17,6 +17,9 @@ enum Resources {
         case editCategory = "Редактирование категории"
         case schedule = "Расписание"
         case filters = "Фильтры"
+        case tracker = "Трекеры"
+        
+        var text: String { rawValue }
     }
     
     enum TitleButtons: String {
@@ -29,10 +32,36 @@ enum Resources {
         case habit = "Привычка"
         case category = "Категория"
         case schedule = "Расписание"
+        
+        var text: String { rawValue }
     }
     
     enum TitleTabBarItem: String {
         case trackers = "Трекеры"
         case statistics = "Статистика"
+        
+        var text: String { rawValue }
+    }
+    
+    enum ImageNames: String {
+        case dizzy = "dizzy"
+        
+        var imageName: String { rawValue }
+    }
+    
+    enum ButtonIcons: String {
+        case plus = "plus"
+        case trackersTabBar = "trackers"
+        case statisticsTabBar = "hare"
+        case clearButton = "xmark.circle"
+        
+        var imageName: String { rawValue }
+    }
+    
+    enum Labels: String {
+        case dizzyLabel = "Что будем отслеживать?"
+        case searchPlaceholder = "Поиск"
+        
+        var text: String { rawValue }
     }
 }
