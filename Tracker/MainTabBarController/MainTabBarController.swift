@@ -12,26 +12,26 @@ final class MainTabBarController: UITabBarController {
         case trackers = 0
         case statistics = 1
         
-        var title: String {
+        var title: Resources.TitleTabBarItem {
             switch self {
-            case .trackers: return "Трекеры"
-            case .statistics: return "Статистика"
+                case .trackers: return .trackers
+                case .statistics: return .statistics
             }
         }
         
         var imageName: String {
             switch self {
-            case .trackers: return "trackers"
-            case .statistics: return "hare"
+                case .trackers: return "trackers"
+                case .statistics: return "hare"
             }
         }
         
         var viewController: UIViewController {
             switch self {
-            case .trackers:
-                return TrackerViewController()
-            case .statistics:
-                return TrackerStatisticsViewController()
+                case .trackers:
+                    return TrackerViewController()
+                case .statistics:
+                    return TrackerStatisticsViewController()
             }
         }
     }
@@ -62,7 +62,7 @@ final class MainTabBarController: UITabBarController {
         let navigationController = UINavigationController(rootViewController: viewController)
         
         navigationController.tabBarItem = UITabBarItem(
-            title: tab.title,
+            title: tab.title.rawValue,
             image: UIImage(named: tab.imageName),
             selectedImage: UIImage(named: tab.imageName)
         )

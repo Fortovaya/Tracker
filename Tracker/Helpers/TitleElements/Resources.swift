@@ -30,4 +30,9 @@ enum Resources {
         case category = "Категория"
         case schedule = "Расписание"
     }
+    
+    enum TitleTabBarItem: String {
+        case trackers = "Трекеры"
+        case statistics = "Статистика"
+    }
 }
