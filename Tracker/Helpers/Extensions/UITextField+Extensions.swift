@@ -28,7 +28,7 @@ extension UITextField {
         textField.layer.masksToBounds = true
         
         let clearButton = UIButton(type: .system)
-        clearButton.setImage(UIImage(named: "xmark.circle"),for: .normal)
+        clearButton.setImage(clearButtonImage, for: .normal)
         clearButton.tintColor = .ypGray
         clearButton.sizeToFit()
         clearButton.addTarget(textField,action: #selector(clearButtonTapped),for: .touchUpInside)
