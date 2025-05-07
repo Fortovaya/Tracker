@@ -49,4 +49,3 @@ final class BaseButton: HighlightableButton {
         return nil
     }
 }
-
