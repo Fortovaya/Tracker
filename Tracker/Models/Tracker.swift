@@ -9,7 +9,7 @@ import UIKit
 struct Tracker {
     typealias Identifier = UUID
     
-    let idTrackers: Identifier
+    let idTrackers: Identifier = UUID()
     let nameTrackers: String
     let colorTrackers: UIColor
     let emojiTrackers: String
