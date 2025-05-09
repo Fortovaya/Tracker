@@ -1,0 +1,44 @@
+//
+//  HeaderView.swift
+//  Tracker
+//
+//  Created by Алина on 09.05.2025.
+//
+import UIKit
+
+final class HeaderView: UICollectionReusableView {
+    
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.font = .systemFont(ofSize: 19, weight: .bold)
+        return label
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        configurationHeaderView()
+    }
+    
+    required init?(coder: NSCoder) {
+        assertionFailure("init(coder:) has not been implemented")
+        return nil
+    }
+    
+    private func configurationHeaderView(){
+        addSubview(titleLabel)
+        
+        [titleLabel].disableAutoresizingMask()
+        
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+    
+   func setupTitleHeader(title: String){
+        titleLabel.text = title
+    }
+}
