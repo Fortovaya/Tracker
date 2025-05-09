@@ -49,6 +49,6 @@ final class TrackerTypeViewController: BaseController {
     }
     
     @objc private func tapEventsButton(){
-        print("TO DO: tapEventsButton")
+        presentPageSheet(viewController: EventsViewController())
     }
 }
