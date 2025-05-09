@@ -43,6 +43,7 @@ final class TrackerViewController: BaseController {
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: Resources.ButtonIcons.plus.imageName), for: .normal)
+        button.tintColor = .ypBlack
         button.addTarget(self, action: #selector(tapAddTrackerButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -95,6 +96,12 @@ final class TrackerViewController: BaseController {
         return searchController
     }()
     
+    private lazy var trackerCollectionMain: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        return collectionView
+    }()
+    
     //MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,8 +112,9 @@ final class TrackerViewController: BaseController {
     //MARK: Private method
     private func configureConstraintsTrackerViewController() {
         view.addSubview(dizzyStackView)
+        view.addSubview(trackerCollectionMain)
         
-        [dizzyStackView, dizzyImage].disableAutoresizingMask()
+        [dizzyStackView, dizzyImage, trackerCollectionMain].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
             dizzyImage.widthAnchor.constraint(equalToConstant: 80),
@@ -114,7 +122,11 @@ final class TrackerViewController: BaseController {
             
             dizzyStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             dizzyStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            dizzyStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -304)
+            dizzyStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -304),
+            
+            trackerCollectionMain.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            trackerCollectionMain.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            trackerCollectionMain.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
     
@@ -159,3 +171,10 @@ extension TrackerViewController: UISearchResultsUpdating {
         // TO DO:
     }
 }
+
+extension TrackerViewController: FooterViewDelegate {
+    func footerViewDidTapPlusButton(_ footerView: FooterView) {
+        //TO DO:
+    }
+}
+

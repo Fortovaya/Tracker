@@ -17,6 +17,7 @@ extension UIColor {
     static var ypRed: UIColor{UIColor(named: "#F56B6C") ?? UIColor.red }
     static var ypToggle: UIColor{UIColor(named: "#E6E8EB") ?? UIColor.lightGray }
     static var backgroundNight: UIColor{UIColor(named: "#414141D9(85%)") ?? UIColor.gray }
+    static var ypBlackBorder: UIColor {UIColor(named: "#000000") ?? UIColor.black }
     
     static var ypCellColorRed: UIColor { UIColor(named: "#FD4C49") ?? UIColor.red }
     static var ypCellColorOrange: UIColor { UIColor(named: "#FF881E") ?? UIColor.orange }

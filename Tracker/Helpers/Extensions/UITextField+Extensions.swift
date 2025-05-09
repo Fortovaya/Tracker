@@ -12,6 +12,7 @@ extension UITextField {
         placeholder: TextFieldPlaceholder,
         backgroundColor: UIColor = .ypBackgroundTF,
         placeholderColor: UIColor = .ypGray,
+        height: CGFloat = 0,
         cornerRadius: CGFloat = 16,
         clearButtonImage: UIImage? = UIImage(named: "xmark.circle")
     ) -> UITextField {
@@ -26,6 +27,10 @@ extension UITextField {
         textField.layer.cornerRadius = cornerRadius
         textField.textColor = .ypBlack
         textField.layer.masksToBounds = true
+        
+        if height > 0 {
+            textField.heightAnchor.constraint(equalToConstant: height).isActive = true
+        }
         
         let clearButton = UIButton(type: .system)
         clearButton.setImage(clearButtonImage, for: .normal)

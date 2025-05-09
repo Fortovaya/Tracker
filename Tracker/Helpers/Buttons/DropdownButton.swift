@@ -26,6 +26,7 @@ final class DropdownButton: HighlightableButton {
         font: UIFont = .systemFont(ofSize: 17, weight: .regular),
         titleColor: UIColor = .ypBlack,
         backgroundColor: UIColor = .ypBackgroundTF,
+        cornerRadius: CGFloat = 0,
         image: String = "chevron",
         height: CGFloat = 75,
         horizontalInset: CGFloat = 16,
@@ -34,7 +35,7 @@ final class DropdownButton: HighlightableButton {
         action: Selector? = nil
     ) {
         super.init(frame: .zero)
-        setupAppearance( backgroundColor: backgroundColor,height: height)
+        setupAppearance( backgroundColor: backgroundColor,height: height, cornerRadius: cornerRadius)
         setupContentStack(title: title.text,font: font,titleColor: titleColor,imageName: image,spacing: spacing)
         setupConstraints(horizontalInset: horizontalInset)
         setupTarget(target: target, action: action)
@@ -47,8 +48,9 @@ final class DropdownButton: HighlightableButton {
     }
         
     // MARK: - Private Methods
-    private func setupAppearance(backgroundColor: UIColor, height: CGFloat) {
+    private func setupAppearance(backgroundColor: UIColor, height: CGFloat, cornerRadius: CGFloat ) {
         self.backgroundColor = backgroundColor
+        self.layer.cornerRadius = cornerRadius
         self.layer.masksToBounds = true
         self.translatesAutoresizingMaskIntoConstraints = false
         self.heightAnchor.constraint(equalToConstant: height).isActive = true

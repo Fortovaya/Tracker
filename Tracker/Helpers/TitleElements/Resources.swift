@@ -18,6 +18,7 @@ enum Resources {
         case schedule = "Расписание"
         case filters = "Фильтры"
         case tracker = "Трекеры"
+        case newEvents = "Новое нерегулярное событие"
         
         var text: String { rawValue }
     }
