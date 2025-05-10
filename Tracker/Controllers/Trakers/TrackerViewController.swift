@@ -98,6 +98,7 @@ final class TrackerViewController: BaseController {
     
     private lazy var trackerCollectionMain: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
     }()
@@ -173,7 +174,8 @@ extension TrackerViewController: UISearchResultsUpdating {
 }
 
 extension TrackerViewController: FooterViewDelegate {
-    func footerViewDidTapPlusButton(_ footerView: FooterView) {
+    
+    func footerViewDidTapPlusButton(_ footerView: FooterView, inSection section: Int) {
         //TO DO:
     }
 }
