@@ -8,9 +8,12 @@ import UIKit
 
 final class HeaderView: UICollectionReusableView {
     
+    static let headerReuseIdentifier = Identifier.TrackerCollection.headerView.text
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlack
+        label.numberOfLines = 1
         label.font = .systemFont(ofSize: 19, weight: .bold)
         return label
     }()

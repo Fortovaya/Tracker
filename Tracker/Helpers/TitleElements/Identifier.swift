@@ -9,5 +9,9 @@ import Foundation
 enum Identifier {
     enum TrackerCollection: String {
         case trackerCell = "TrackerCell"
+        case headerView = "HeaderView"
+        case footerView = "FooterView"
+        
+        var text: String { rawValue }
     }
 }

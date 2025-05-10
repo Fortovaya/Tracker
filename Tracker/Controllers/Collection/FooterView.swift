@@ -9,6 +9,8 @@ import UIKit
 final class FooterView: UICollectionReusableView {
     
     weak var delegate: FooterViewDelegate?
+    
+    static let footerReuseIdentifier = Identifier.TrackerCollection.footerView.text
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
