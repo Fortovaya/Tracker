@@ -8,6 +8,14 @@ import UIKit
 
 final class TrackerCell: UICollectionViewCell {
     
+    private enum Constants {
+        static let contentCornerRadius: CGFloat = 16
+        static let emojiContainerSize: CGFloat = 24
+        static let padding: CGFloat = 12
+        static let labelMaxLines = 2
+        static let emojiSizeMultiplier: CGFloat = 0.6
+    }
+    
     static let identifier = Identifier.TrackerCollection.trackerCell.text
     
     private lazy var trackerLabel: UILabel = {
@@ -15,30 +23,20 @@ final class TrackerCell: UICollectionViewCell {
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .left
         label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 2
+        label.numberOfLines = Constants.labelMaxLines
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var smileView: UIView = {
+    private lazy var emojiContainerView: UIView = {
         let smileView = UIView()
         smileView.backgroundColor = UIColor.ypWhite.withAlphaComponent(0.3)
-        
-        let size: CGFloat = 24
-        [smileView].disableAutoresizingMask()
-        
-        NSLayoutConstraint.activate([
-            smileView.heightAnchor.constraint(equalToConstant: size),
-            smileView.widthAnchor.constraint(equalToConstant: size)
-        ])
-        
-        smileView.layer.cornerRadius = size / 2
+        smileView.layer.cornerRadius = Constants.emojiContainerSize / 2
         smileView.clipsToBounds = true
-        
         return smileView
     }()
     
-    private lazy var emojiSmile: UIImageView = {
+    private lazy var emojiImageView: UIImageView = {
         let emojiSmile = UIImageView()
         emojiSmile.contentMode = .scaleAspectFit
         emojiSmile.translatesAutoresizingMaskIntoConstraints = false
@@ -50,49 +48,59 @@ final class TrackerCell: UICollectionViewCell {
         setupCell()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        emojiContainerView.layer.cornerRadius = emojiContainerView.bounds.width / 2
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override func prepareForReuse(){
         super.prepareForReuse()
+        resetCell()
+    }
+    
+    private func resetCell(){
         contentView.backgroundColor = nil
-        emojiSmile.image = nil
+        emojiImageView.image = nil
         trackerLabel.text = nil
     }
     
     private func setupCell() {
-        contentView.layer.cornerRadius = 16
+        contentView.layer.cornerRadius = Constants.contentCornerRadius
         contentView.layer.masksToBounds = true
         
-        contentView.addSubview(trackerLabel)
-        contentView.addSubview(smileView)
-        smileView.addSubview(emojiSmile)
+        contentView.addSubviews([trackerLabel,emojiContainerView])
+        emojiContainerView.addSubview(emojiImageView)
         
         let maxHeight = trackerLabel.font.lineHeight * CGFloat(trackerLabel.numberOfLines)
         
         NSLayoutConstraint.activate([
-            trackerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            trackerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            trackerLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            trackerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.padding),
+            trackerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.padding),
+            trackerLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.padding),
             trackerLabel.heightAnchor.constraint(lessThanOrEqualToConstant: maxHeight),
             
-            smileView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            smileView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            smileView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -131),
+            emojiContainerView.heightAnchor.constraint(equalToConstant: Constants.emojiContainerSize),
+            emojiContainerView.widthAnchor.constraint(equalToConstant: Constants.emojiContainerSize),
+            emojiContainerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.padding),
+            emojiContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.padding),
+            emojiContainerView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -131),
             
-            emojiSmile.centerXAnchor.constraint(equalTo: smileView.centerXAnchor),
-            emojiSmile.centerYAnchor.constraint(equalTo: smileView.centerYAnchor),
-            emojiSmile.widthAnchor.constraint(equalTo: smileView.widthAnchor, multiplier: 0.6),
-            emojiSmile.heightAnchor.constraint(equalTo: smileView.heightAnchor, multiplier: 0.6)
+            emojiImageView.centerXAnchor.constraint(equalTo: emojiContainerView.centerXAnchor),
+            emojiImageView.centerYAnchor.constraint(equalTo: emojiContainerView.centerYAnchor),
+            emojiImageView.widthAnchor.constraint(equalTo: emojiContainerView.widthAnchor,multiplier: Constants.emojiSizeMultiplier),
+            emojiImageView.heightAnchor.constraint(equalTo: emojiContainerView.heightAnchor,multiplier: Constants.emojiSizeMultiplier)
         ])
         
         trackerLabel.setContentHuggingPriority(.required, for: .vertical)
         trackerLabel.setContentCompressionResistancePriority(.required, for: .vertical)
     }
     
-    func configureCell(emoji: Resources.EmojiImage,text: String, color: UIColor) {
-        emojiSmile.image = UIImage(named: emoji.imageName)
+    func configureCell(with emoji: Resources.EmojiImage,text: String, color: UIColor) {
+        emojiImageView.image = UIImage(named: emoji.imageName)
         trackerLabel.text = text
         contentView.backgroundColor = color
     }
