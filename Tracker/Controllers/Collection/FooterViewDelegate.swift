@@ -7,5 +7,5 @@
 import Foundation
 
 protocol FooterViewDelegate: AnyObject {
-    func footerViewDidTapPlusButton(_ footerView: FooterView)
+    func footerViewDidTapPlusButton(_ footerView: FooterView, inSection section: Int)
 }

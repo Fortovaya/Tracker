@@ -11,10 +11,13 @@ final class FooterView: UICollectionReusableView {
     weak var delegate: FooterViewDelegate?
     
     static let footerReuseIdentifier = Identifier.TrackerCollection.footerView.text
+    
+    private var section: Int = .zero
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlack
+        label.backgroundColor = .clear
         label.numberOfLines = 1
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 12, weight: .medium)
@@ -54,7 +57,6 @@ final class FooterView: UICollectionReusableView {
         
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         configurationFooterView()
     }
     
@@ -74,13 +76,17 @@ final class FooterView: UICollectionReusableView {
             footerStackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             footerStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
+        
+        backgroundColor = .clear
     }
     
-    func setupTitleFooter(title: String){
+    func setupTitleFooter(forSection section: Int, delegate: FooterViewDelegate, title: String){
+        self.section = section
+        self.delegate = delegate
         titleLabel.text = title
     }
     
     @objc private func didTapPlusButton(){
-        //TO DO:
+        delegate?.footerViewDidTapPlusButton(self, inSection: section)
     }
 }

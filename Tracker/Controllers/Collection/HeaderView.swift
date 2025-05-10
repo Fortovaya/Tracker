@@ -39,6 +39,8 @@ final class HeaderView: UICollectionReusableView {
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        
+        backgroundColor = .clear
     }
     
    func setupTitleHeader(title: String){
