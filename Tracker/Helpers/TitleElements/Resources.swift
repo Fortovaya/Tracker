@@ -50,6 +50,21 @@ enum Resources {
         var imageName: String { rawValue }
     }
     
+    enum EmojiImage: String, CaseIterable {
+        case emojiSmile, emojiCatHeartEyes, emojiHibiscus,
+             emojiDog, emojiHeart,emojiScream, emojiAngel,
+             emojiAngry,emojiColdFace, emojiThinking,
+             emojiRaisedHands,emojiBurger,
+             emojiBroccoli, emojiTableTennis,
+             emojiGoldMedal, emojiGuitar,emojiIsland,
+             emojiSleepy
+        
+        static var allCasesList: [EmojiImage] { allCases }
+        static var allImageNames: [String] { allCases.map { $0.imageName } }
+       
+        var imageName: String { rawValue }
+    }
+    
     enum ButtonIcons: String {
         case plus = "plus"
         case trackersTabBar = "trackers"
