@@ -92,7 +92,8 @@ final class NewHabitViewController: BaseController {
     }
     
     @objc private func tapCategoryButton(){
-        print("tapCategoryButton")
+        let categoriesVC = CategoriesViewController()
+        presentPageSheet(viewController: categoriesVC)
     }
     
     @objc private func tapScheduleButton(){
