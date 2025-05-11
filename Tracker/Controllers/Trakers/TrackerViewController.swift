@@ -9,6 +9,9 @@ import UIKit
 final class TrackerViewController: BaseController {
     
     //MARK: Private variable
+    private var helper: TrackerCollection?
+    let params = GeometricParams(cellCount: 2, cellSpacing: 9)
+    
     private var categories: [TrackerCategory] = [] // список категорий и трекеров
     private var completedTrackers: [TrackerRecord] = [] // выполненные трекеры (после нажатия на +, добавляется запись в completedTrackers
     private var newTrackers: [Tracker] = []
@@ -100,6 +103,7 @@ final class TrackerViewController: BaseController {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
@@ -108,6 +112,7 @@ final class TrackerViewController: BaseController {
         super.viewDidLoad()
         setupTopNavigationBar()
         configureConstraintsTrackerViewController()
+        updatePlaceholderVisibility()
     }
     
     //MARK: Private method
@@ -129,6 +134,8 @@ final class TrackerViewController: BaseController {
             trackerCollectionMain.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             trackerCollectionMain.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
+        
+        setupHelper()
     }
     
     private func setupTopNavigationBar() {
@@ -164,6 +171,19 @@ final class TrackerViewController: BaseController {
             print("Выбрана дата: \(title)")
         }
         present(calendarVC, animated: true)
+    }
+    
+    private func setupHelper(){
+        helper = TrackerCollection(categories: categories,
+                                   params: params,
+                                   collection: trackerCollectionMain)
+    }
+    
+    private func updatePlaceholderVisibility(){
+        let totalTrackers = categories.reduce(0) { $0 + $1.trackers.count }
+        let isEmpty = (totalTrackers == 0)
+        dizzyStackView.isHidden = !isEmpty
+        trackerCollectionMain.isHidden = isEmpty
     }
 }
 

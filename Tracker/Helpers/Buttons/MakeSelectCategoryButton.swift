@@ -13,7 +13,7 @@ final class MakeSelectCategoryButton: HighlightableButton {
     private let imageWidth: CGFloat = 14
     private let spacing: CGFloat = 8
     
-    private var shouldHideImage: Bool = false
+    private var shouldHideImage: Bool = true
     
     var isImageHidden: Bool {
         get { shouldHideImage }

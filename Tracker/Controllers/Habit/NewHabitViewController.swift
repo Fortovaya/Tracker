@@ -15,10 +15,13 @@ final class NewHabitViewController: BaseController {
     }
     
     private var orderedSelectedDays: [WeekDay] = []
+    private var categories: [String] = []
     
     private var selectedDaysString: String {
         orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
     }
+    
+    private var isCategoryImageHidden: Bool = true
     
     private lazy var inputTextField = UITextField.makeClearableTextField(placeholder: .trackerName)
     
@@ -93,6 +96,8 @@ final class NewHabitViewController: BaseController {
     
     @objc private func tapCategoryButton(){
         let categoriesVC = CategoriesViewController()
+        categoriesVC.delegate = self
+        categoriesVC.isImageInitiallyHidden = isCategoryImageHidden
         presentPageSheet(viewController: categoriesVC)
     }
     
@@ -112,9 +117,17 @@ final class NewHabitViewController: BaseController {
     }
 }
 
-extension NewHabitViewController: ScheduleViewControllerDelegate {
+extension NewHabitViewController: ScheduleViewControllerDelegate, CategoriesVCDelegate {
+    
+    func categoriesViewController(_ controller: CategoriesViewController, didSelectCategory title: String,
+                                  isImageHidden: Bool) {
+        categoryButton.setSubtitle(title)
+        isCategoryImageHidden = controller.selectCategoryButtonIsHidden
+    }
+    
     func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekDay>) {
         selectedDays = days
         scheduleButton.setSubtitle(selectedDaysString)
     }
+    
 }
