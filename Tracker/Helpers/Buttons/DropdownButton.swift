@@ -12,6 +12,10 @@ final class DropdownButton: HighlightableButton {
     private lazy var chevron = UIImageView()
     private lazy var contentStack = UIStackView()
     
+    var subtitle: String {
+        return secondaryLabel.text ?? ""
+    }
+    
     private lazy var secondaryLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -117,4 +121,3 @@ final class DropdownButton: HighlightableButton {
         return nil
     }
 }
-
