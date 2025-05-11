@@ -8,14 +8,17 @@ import UIKit
 
 final class NewHabitViewController: BaseController {
     
+    weak var delegate: NewHabitViewControllerDelegate?
+    
     private var selectedDays: Set<WeekDay> = [] {
         didSet {
             orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
         }
     }
     
-    private var orderedSelectedDays: [WeekDay] = []
-    private var categories: [String] = []
+    private var orderedSelectedDays: [WeekDay] = [] // выбранные дни
+    private var trackerName: String?
+    private var selectedCategory: String?  // выбранная категория
     
     private var selectedDaysString: String {
         orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
@@ -23,7 +26,9 @@ final class NewHabitViewController: BaseController {
     
     private var isCategoryImageHidden: Bool = true
     
-    private lazy var inputTextField = UITextField.makeClearableTextField(placeholder: .trackerName)
+    private lazy var inputTextField = UITextField.makeClearableTextField(placeholder: .trackerName,
+                                                                         target: self,
+                                                                         action: #selector(textFieldDidChange))
     
     private lazy var categoryButton = DropdownButton(title: .category,
                                                      target: self,
@@ -35,17 +40,13 @@ final class NewHabitViewController: BaseController {
     
     private lazy var buttonStackView = UIStackView.makeCard(topView: categoryButton, bottomView: scheduleButton)
     
-    private lazy var cancelButton = BaseButton(
-        title: .cancel,
-        backgroundColor:.clear,
-        titleColor: .ypRed,
-        borderColor: .ypRed,
-        borderWidth: 1,
-        target: self,
-        action: #selector(
-            didTapCancelButton
-        )
-    )
+    private lazy var cancelButton = BaseButton(title: .cancel,
+                                               backgroundColor:.clear,
+                                               titleColor: .ypRed,
+                                               borderColor: .ypRed,
+                                               borderWidth: 1,
+                                               target: self,
+                                               action: #selector(didTapCancelButton))
     
     private lazy var saveButton = BaseButton(title: .create, backgroundColor: .ypGray,
                                              titleColor:.ypWhite,
@@ -64,7 +65,7 @@ final class NewHabitViewController: BaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNewHabitViewController()
-        
+        updateSaveButtonState()
     }
     
     private func setupNewHabitViewController(){
@@ -94,6 +95,15 @@ final class NewHabitViewController: BaseController {
         setCenteredInlineTitle(title: .newHabit)
     }
     
+    private func updateSaveButtonState() {
+        let hasText = !(trackerName?.isEmpty ?? true)
+        let hasCategory = !(selectedCategory?.isEmpty ?? true)
+        let hasSchedule = !selectedDays.isEmpty
+        let enabled = hasText && hasCategory && hasSchedule
+        saveButton.isEnabled = enabled
+        saveButton.backgroundColor = enabled ? .ypBlack : .ypGray
+    }
+    
     @objc private func tapCategoryButton(){
         let categoriesVC = CategoriesViewController()
         categoriesVC.delegate = self
@@ -108,12 +118,31 @@ final class NewHabitViewController: BaseController {
         presentPageSheet(viewController: scheduleVC)
     }
     
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        trackerName = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        updateSaveButtonState()
+    }
+    
     @objc private func didTapCancelButton(){
         dismissToRootModal()
     }
     
     @objc private func didTapSaveButton(){
-        //TO DO:
+        guard
+            let name = trackerName, !name.isEmpty,
+            let category = selectedCategory,
+            !selectedDays.isEmpty
+        else { return }
+        /// не забыть убрать установку рандомного смайлика в коллекцию
+        let emoji = Resources.EmojiImage.allCases.randomElement()!.rawValue
+        
+        let tracker = Tracker(nameTrackers: name,
+                              colorTrackers: .ypCellColorPink,
+                              emojiTrackers: emoji,
+                              scheduleTrackers: selectedDays)
+        
+        delegate?.newHabitViewController(self, didCreateTracker: tracker, categoryTitle: category)
+        dismissToRootModal()
     }
 }
 
@@ -121,13 +150,15 @@ extension NewHabitViewController: ScheduleViewControllerDelegate, CategoriesVCDe
     
     func categoriesViewController(_ controller: CategoriesViewController, didSelectCategory title: String,
                                   isImageHidden: Bool) {
+        selectedCategory = title
         categoryButton.setSubtitle(title)
-        isCategoryImageHidden = controller.selectCategoryButtonIsHidden
+        isCategoryImageHidden = isImageHidden
+        updateSaveButtonState()
     }
     
     func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekDay>) {
         selectedDays = days
         scheduleButton.setSubtitle(selectedDaysString)
+        updateSaveButtonState()
     }
-    
 }
