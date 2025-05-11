@@ -63,6 +63,7 @@ extension UITextField {
     
     @objc private func clearButtonTapped() {
         self.text = nil
+        self.sendActions(for: .editingChanged)
         self.resignFirstResponder()
     }
 }
