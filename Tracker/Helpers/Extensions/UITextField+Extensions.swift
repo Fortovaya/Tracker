@@ -14,7 +14,9 @@ extension UITextField {
         placeholderColor: UIColor = .ypGray,
         height: CGFloat = 0,
         cornerRadius: CGFloat = 16,
-        clearButtonImage: UIImage? = UIImage(named: "xmark.circle")
+        clearButtonImage: UIImage? = UIImage(named: "xmark.circle"),
+        target: Any? = nil,
+        action: Selector? = nil
     ) -> UITextField {
         let textField = UITextField()
         
@@ -51,6 +53,10 @@ extension UITextField {
         
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
         textField.leftViewMode = .always
+        
+        if let target = target, let action = action {
+            textField.addTarget(target, action: action, for: .editingChanged)
+        }
         
         return textField
     }
