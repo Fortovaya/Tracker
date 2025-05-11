@@ -20,15 +20,23 @@ final class TrackerCollectionServices: NSObject {
     
     private let params: GeometricParams
     private unowned let collection: UICollectionView
+    private let headerTitles: [String]
+    private let footerTitles: [String]
     
     var emojis: [Resources.EmojiImage] = []
     var categories: [TrackerCategory] = []
 
-    init(categories: [TrackerCategory],params: GeometricParams, collection: UICollectionView) {
+    init(categories: [TrackerCategory],
+         params: GeometricParams,
+         collection: UICollectionView,
+         headerTitles: [String],
+         footerTitles: [String]
+    ) {
         self.categories = categories
         self.params = params
         self.collection = collection
-        
+        self.headerTitles = headerTitles
+        self.footerTitles = footerTitles
         super.init()
         
         registrationElements()
@@ -51,6 +59,11 @@ final class TrackerCollectionServices: NSObject {
         return availableWidth / CGFloat(params.cellCount)
     }
 
+    func updateCategories(with newCategories: [TrackerCategory]) {
+        self.categories = newCategories
+        collection.reloadData()
+    }
+    
     func addEmoji(named rawName: String) {
         // Пытаемся создать case из rawValue
         guard let emoji = Resources.EmojiImage(rawValue: rawName) else {
