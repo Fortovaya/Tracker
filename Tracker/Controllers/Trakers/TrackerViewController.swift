@@ -9,7 +9,7 @@ import UIKit
 final class TrackerViewController: BaseController {
     
     //MARK: Private variable
-    private var helper: TrackerCollection?
+    private var helper: TrackerCollectionServices?
     let params = GeometricParams(cellCount: 2, cellSpacing: 9)
     
     private var categories: [TrackerCategory] = [] // список категорий и трекеров
@@ -99,10 +99,11 @@ final class TrackerViewController: BaseController {
         return searchController
     }()
     
-    private lazy var trackerCollectionMain: UICollectionView = {
+    var trackerCollectionMain: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -111,9 +112,18 @@ final class TrackerViewController: BaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTopNavigationBar()
+        setupHelper()
         configureConstraintsTrackerViewController()
         updatePlaceholderVisibility()
+        
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupHelper()                   // ← сюда
+        updatePlaceholderVisibility()   // ← сюда
+    }
+
     
     //MARK: Private method
     private func configureConstraintsTrackerViewController() {
@@ -133,9 +143,8 @@ final class TrackerViewController: BaseController {
             trackerCollectionMain.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             trackerCollectionMain.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             trackerCollectionMain.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            trackerCollectionMain.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24)
         ])
-        
-        setupHelper()
     }
     
     private func setupTopNavigationBar() {
@@ -155,7 +164,9 @@ final class TrackerViewController: BaseController {
     }
     
     @objc private func tapAddTrackerButton() {
-        presentPageSheet(viewController: TrackerTypeViewController())
+        let typeVC = TrackerTypeViewController()
+        typeVC.habitDelegate = self
+        presentPageSheet(viewController: typeVC)
     }
     
     @objc private func tapDateButton() {
@@ -174,9 +185,18 @@ final class TrackerViewController: BaseController {
     }
     
     private func setupHelper(){
-        helper = TrackerCollection(categories: categories,
-                                   params: params,
-                                   collection: trackerCollectionMain)
+//        helper = TrackerCollectionServices(categories: categories,
+//                                   params: params,
+//                                   collection: trackerCollectionMain)
+        let headerTitles = categories.map { $0.title }
+        let footerTitles = categories.map { "\($0.trackers.count) трекеров" }
+        helper = TrackerCollectionServices(
+            categories: categories,
+            params: params,
+            collection: trackerCollectionMain,
+            headerTitles: headerTitles,
+            footerTitles: footerTitles
+        )
     }
     
     private func updatePlaceholderVisibility(){
@@ -184,6 +204,12 @@ final class TrackerViewController: BaseController {
         let isEmpty = (totalTrackers == 0)
         dizzyStackView.isHidden = !isEmpty
         trackerCollectionMain.isHidden = isEmpty
+    }
+    
+    func updateCategories(_ newCategories: [TrackerCategory]) {
+        categories = newCategories
+        setupHelper()
+        updatePlaceholderVisibility()
     }
 }
 
@@ -193,10 +219,26 @@ extension TrackerViewController: UISearchResultsUpdating {
     }
 }
 
-extension TrackerViewController: FooterViewDelegate {
+extension TrackerViewController: NewHabitViewControllerDelegate {
     
-    func footerViewDidTapPlusButton(_ footerView: FooterView, inSection section: Int) {
-        //TO DO:
+    func newHabitViewController(_ controller: NewHabitViewController, didCreateTracker tracker: Tracker,
+                                categoryTitle: String) {
+        if let idx = categories.firstIndex(where: { $0.title == categoryTitle }){
+            let old = categories[idx]
+            let updated = TrackerCategory(
+                title: old.title,
+                trackers: old.trackers + [tracker]
+            )
+            categories[idx] = updated
+        } else  {
+            let newCat = TrackerCategory(
+                title: categoryTitle,
+                trackers: [tracker]
+            )
+            categories.append(newCat)
+        }
+        newTrackers.append(tracker)
+        helper?.updateCategories(with: categories)
+        updatePlaceholderVisibility()
     }
 }
-

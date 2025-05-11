@@ -7,6 +7,9 @@
 import UIKit
 
 final class TrackerTypeViewController: BaseController {
+    //MARK: - Delegate
+    weak var habitDelegate: NewHabitViewControllerDelegate?
+
     //MARK: Private variables
     private lazy var habitButton = BaseButton(title: .habit,
                                               target: self,
@@ -45,7 +48,9 @@ final class TrackerTypeViewController: BaseController {
     }
     
     @objc private func tapHabitButton(){
-        presentPageSheet(viewController: NewHabitViewController())
+        let newVC = NewHabitViewController()
+        newVC.delegate = habitDelegate
+        presentPageSheet(viewController: newVC)
     }
     
     @objc private func tapEventsButton(){
