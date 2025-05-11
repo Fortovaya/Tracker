@@ -7,7 +7,16 @@
 import UIKit
 //TO DO:
 final class CategoriesViewController: BaseController {
+    //MARK: - Delegate
+    weak var delegate: CategoriesVCDelegate?
     
+    var isImageInitiallyHidden: Bool = true
+    
+    var selectCategoryButtonIsHidden: Bool {
+        return selectCategoryButton.isImageHidden
+    }
+   
+    //MARK: - Private lazy var
     private lazy var selectCategoryButton = MakeSelectCategoryButton(
         title: "Домашний уют",
         height: 75,
@@ -15,17 +24,17 @@ final class CategoriesViewController: BaseController {
         action: #selector(didTapSelectCategory)
     )
     
-    
     private lazy var addNewCategoriesButton = BaseButton(title: .addCategory,
                                                target: self,
                                                action: #selector(didTapNewCategories))
-    
+    //MARK: - Life Cycle
     override func viewDidLoad(){
         super.viewDidLoad()
         setCenteredInlineTitle(title: .category)
         configurationCategoriesVC()
     }
     
+    //MARK: - Private Method
     private func configurationCategoriesVC(){
         view.addSubviews([addNewCategoriesButton, selectCategoryButton])
         
@@ -41,12 +50,19 @@ final class CategoriesViewController: BaseController {
             selectCategoryButton.heightAnchor.constraint(equalToConstant: 75)
             
         ])
+        
+        selectCategoryButton.isImageHidden = isImageInitiallyHidden
     }
     
     @objc private func didTapSelectCategory(){
         selectCategoryButton.isImageHidden.toggle()
+        let title = selectCategoryButton.title(for: .normal) ?? ""
+        delegate?.categoriesViewController(self, didSelectCategory: title,
+                                           isImageHidden: selectCategoryButton.isImageHidden)
+        dismiss(animated: true)
     }
     
     @objc private func didTapNewCategories(){
+        
     }
 }
