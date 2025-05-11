@@ -16,7 +16,7 @@ struct GeometricParams {
     }
 }
 
-final class TrackerCollection: NSObject {
+final class TrackerCollectionServices: NSObject {
     
     private let params: GeometricParams
     private unowned let collection: UICollectionView
@@ -67,7 +67,7 @@ final class TrackerCollection: NSObject {
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
-extension TrackerCollection: UICollectionViewDelegateFlowLayout {
+extension TrackerCollectionServices: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -91,10 +91,22 @@ extension TrackerCollection: UICollectionViewDelegateFlowLayout {
         
         return CGSize(width: collectionView.bounds.width, height: 58)
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return params.cellSpacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return params.cellSpacing
+    }
 }
 
 // MARK: UICollectionViewDataSource
-extension TrackerCollection: UICollectionViewDataSource {
+extension TrackerCollectionServices: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return categories.count
@@ -157,7 +169,7 @@ extension TrackerCollection: UICollectionViewDataSource {
     }
 }
 
-extension TrackerCollection: FooterViewDelegate {
+extension TrackerCollectionServices: FooterViewDelegate {
     func footerViewDidTapPlusButton(_ footerView: FooterView, inSection section: Int) {
         print("Плюс в футере секции \(section) нажали!")
     }
