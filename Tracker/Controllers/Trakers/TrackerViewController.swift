@@ -187,7 +187,7 @@ final class TrackerViewController: BaseController {
             
             self.updateFooters(for: selectedDate)
             self.filtersTrackers(for: weekDay)
-            print("✅ Выбрана дата: \(title)")
+            print(" Выбрана дата: \(title)")
         }
         present(calendarVC, animated: true)
     }
@@ -210,11 +210,15 @@ final class TrackerViewController: BaseController {
         )
     }
     
-    private func updatePlaceholderVisibility(){
-        let totalTrackers = categories.reduce(0) { $0 + $1.trackers.count }
+    private func updatePlaceholderVisibility(using filteredCategories: [TrackerCategory]){
+        let totalTrackers = filteredCategories.reduce(0) { $0 + $1.trackers.count }
         let isEmpty = (totalTrackers == 0)
         dizzyStackView.isHidden = !isEmpty
         trackerCollectionMain.isHidden = isEmpty
+    }
+    
+    private func updatePlaceholderVisibility() {
+        updatePlaceholderVisibility(using: categories)
     }
     
     func updateCategories(_ newCategories: [TrackerCategory]) {
@@ -282,7 +286,7 @@ final class TrackerViewController: BaseController {
         }
         
         helper?.updateCategories(with: filtered)
-        updatePlaceholderVisibility()
+        updatePlaceholderVisibility(using: filtered)
     }
     
 }
