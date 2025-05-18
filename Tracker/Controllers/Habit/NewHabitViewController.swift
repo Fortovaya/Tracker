@@ -133,14 +133,16 @@ final class NewHabitViewController: BaseController {
             let category = selectedCategory,
             !selectedDays.isEmpty
         else { return }
-        /// не забыть убрать установку рандомного смайлика в коллекцию
+        /// не забыть убрать установку рандомного смайлика и цвета в коллекцию
         let emoji = Resources.EmojiImage.allCases.randomElement()!.rawValue
+        let randomColor = UIColor.trackerCellColors.randomElement() ?? .ypCellColorPink
         
         let tracker = Tracker(nameTrackers: name,
-                              colorTrackers: .ypCellColorPink,
+                              colorTrackers: randomColor,
                               emojiTrackers: emoji,
                               scheduleTrackers: selectedDays)
         
+        print("✅ Делегат получил трекер с id = \(tracker.idTrackers)")
         delegate?.newHabitViewController(self, didCreateTracker: tracker, categoryTitle: category)
         dismissToRootModal()
     }
