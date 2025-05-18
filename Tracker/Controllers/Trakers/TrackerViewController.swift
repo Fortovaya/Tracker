@@ -10,12 +10,13 @@ final class TrackerViewController: BaseController {
     
     //MARK: Private variable
     private var helper: TrackerCollectionServices?
-    let params = GeometricParams(cellCount: 2, cellSpacing: 9)
-    
-    private var categories: [TrackerCategory] = [] // список категорий и трекеров
-    private var completedTrackers: [TrackerRecord] = [] // выполненные трекеры (после нажатия на +, добавляется запись в completedTrackers
+    let params = GeometricParams(cellCount: 2, cellSpacing: 10, leftInset: 16, rightInset: 16)
+    /// список категорий и трекеров
+    private var categories: [TrackerCategory] = []
+    /// выполненные трекеры (после нажатия на +, добавляется запись в completedTrackers
+    private var completedTrackers: [TrackerRecord] = []
     private var newTrackers: [Tracker] = []
-    private var currentDate: Date?
+    private(set) var currentDate: Date = Date()
     
     private lazy var dizzyImage: UIImageView = {
         let image = UIImage(named: Resources.ImageNames.dizzy.imageName)
@@ -103,7 +104,6 @@ final class TrackerViewController: BaseController {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -112,6 +112,7 @@ final class TrackerViewController: BaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTopNavigationBar()
+        
         setupHelper()
         configureConstraintsTrackerViewController()
         updatePlaceholderVisibility()
@@ -120,8 +121,8 @@ final class TrackerViewController: BaseController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupHelper()                   // ← сюда
-        updatePlaceholderVisibility()   // ← сюда
+        setupHelper()
+        updatePlaceholderVisibility()
     }
 
     
@@ -140,8 +141,8 @@ final class TrackerViewController: BaseController {
             dizzyStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             dizzyStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -304),
             
-            trackerCollectionMain.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            trackerCollectionMain.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            trackerCollectionMain.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            trackerCollectionMain.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             trackerCollectionMain.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             trackerCollectionMain.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24)
         ])
@@ -177,25 +178,32 @@ final class TrackerViewController: BaseController {
         calendarVC.onDatePicked = { [weak self] selectedDate in
             guard let self = self else { return }
             
+            self.currentDate = selectedDate
             let title = DateFormatter.dateFormatter.string(from: selectedDate)
             self.dateButton.setTitle(title, for: .normal)
+            
+            self.updateFooters(for: selectedDate)
+            self.trackerCollectionMain.reloadData()
             print("Выбрана дата: \(title)")
         }
         present(calendarVC, animated: true)
     }
     
     private func setupHelper(){
-//        helper = TrackerCollectionServices(categories: categories,
-//                                   params: params,
-//                                   collection: trackerCollectionMain)
         let headerTitles = categories.map { $0.title }
-        let footerTitles = categories.map { "\($0.trackers.count) трекеров" }
+        let footerTitles = categories.map { category in
+            let completedDays = category.trackers.reduce(0) { count, tracker in
+                completedTrackers.filter { $0.trackerId == tracker.idTrackers }.count
+            }
+            return "\(completedDays) \(dayString(for: completedDays))"
+        }
         helper = TrackerCollectionServices(
             categories: categories,
             params: params,
             collection: trackerCollectionMain,
             headerTitles: headerTitles,
-            footerTitles: footerTitles
+            footerTitles: footerTitles,
+            cellDelegate: self
         )
     }
     
@@ -211,6 +219,57 @@ final class TrackerViewController: BaseController {
         setupHelper()
         updatePlaceholderVisibility()
     }
+    
+    private func toggleTrackerCompletion(for trackerId: UUID, on date: Date) {
+//        guard date <= Date() else { return }
+        let picked = Calendar.current.startOfDay(for: date)
+        let today  = Calendar.current.startOfDay(for: Date())
+        
+        guard picked <= today else {
+            print("⚠️ Попытка отметить трекер для будущей даты: \(date)")
+            return
+        }
+        
+        if let index = completedTrackers.firstIndex(where: {
+            $0.trackerId == trackerId &&
+            Calendar.current.isDate($0.date, inSameDayAs: date)
+        }) {
+            completedTrackers.remove(at: index)
+            print ("❌ Удален id трекера из completedTrackers: \(trackerId)")
+            print(completedTrackers.count)
+        } else {
+            completedTrackers.append(
+                TrackerRecord(
+                    id: UUID(),
+                    trackerId: trackerId,
+                    date: date
+                )
+            )
+            print ("✅ Добавлен id трекера в completedTrackers: \(trackerId)")
+            print(completedTrackers.count)
+        }
+    }
+    
+    private func reloadCell(for cell: TrackerCell) {
+        guard let indexPath = trackerCollectionMain.indexPath(for: cell) else { return }
+        trackerCollectionMain.reloadItems(at: [indexPath])
+    }
+    
+    private func updateFooters(for date: Date) {
+        let newFooters = categories.map { category in
+            let completed = category.trackers.filter { tracker in
+                completedTrackers.contains {
+                    $0.trackerId == tracker.idTrackers &&
+                    Calendar.current.isDate($0.date, inSameDayAs: date)
+                }
+            }.count
+            
+            return "\(completed) \(dayString(for: completed))"
+        }
+        
+        helper?.updateCategories(with: categories, footerTitles: newFooters)
+    }
+    
 }
 
 extension TrackerViewController: UISearchResultsUpdating {
@@ -223,13 +282,13 @@ extension TrackerViewController: NewHabitViewControllerDelegate {
     
     func newHabitViewController(_ controller: NewHabitViewController, didCreateTracker tracker: Tracker,
                                 categoryTitle: String) {
-        if let idx = categories.firstIndex(where: { $0.title == categoryTitle }){
-            let old = categories[idx]
+        if let indexPath = categories.firstIndex(where: { $0.title == categoryTitle }){
+            let old = categories[indexPath]
             let updated = TrackerCategory(
                 title: old.title,
                 trackers: old.trackers + [tracker]
             )
-            categories[idx] = updated
+            categories[indexPath] = updated
         } else  {
             let newCat = TrackerCategory(
                 title: categoryTitle,
@@ -240,5 +299,37 @@ extension TrackerViewController: NewHabitViewControllerDelegate {
         newTrackers.append(tracker)
         helper?.updateCategories(with: categories)
         updatePlaceholderVisibility()
+    }
+}
+
+extension TrackerViewController: TrackerCellDelegate {
+    
+    func trackerCellDidTapPlus(_ cell: TrackerCell, id: UUID) {
+        let today = currentDate
+        toggleTrackerCompletion(for: id, on: today)
+        updateFooters(for: today)
+        updatePlaceholderVisibility()
+        
+        if let indexPath = trackerCollectionMain.indexPath(for: cell) {
+            trackerCollectionMain.reloadItems(at: [indexPath])
+        }
+    }
+    
+    func completedDaysCount(for trackerId: UUID) -> Int {
+        completedTrackers.filter { $0.trackerId == trackerId }.count
+    }
+
+    func isTrackerCompleted(for trackerId: UUID, on date: Date) -> Bool {
+        completedTrackers.contains {
+            $0.trackerId == trackerId &&
+            Calendar.current.isDate($0.date, inSameDayAs: date)
+        }
+    }
+
+    func dayString(for count: Int) -> String {
+        let r10 = count % 10, r100 = count % 100
+        if r10 == 1 && r100 != 11 { return "день" }
+        if (2...4).contains(r10) && !(12...14).contains(r100) { return "дня" }
+        return "дней"
     }
 }
