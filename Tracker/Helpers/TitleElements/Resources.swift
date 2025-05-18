@@ -55,6 +55,7 @@ enum Resources {
         case trackersTabBar = "trackers"
         case statisticsTabBar = "hare"
         case clearButton = "xmark.circle"
+        case checkmark = "checkmark"
         
         var imageName: String { rawValue }
     }
@@ -67,13 +68,24 @@ enum Resources {
     }
     
     enum EmojiImage: String, CaseIterable {
-        case emojiSmile, emojiCatHeartEyes, emojiHibiscus,
-             emojiDog, emojiHeart,emojiScream, emojiAngel,
-             emojiAngry,emojiColdFace, emojiThinking,
-             emojiRaisedHands,emojiBurger,
-             emojiBroccoli, emojiTableTennis,
-             emojiGoldMedal, emojiGuitar,emojiIsland,
-             emojiSleepy
+        case emojiSmile = "emojiSmile"
+        case emojiCatHeartEyes = "emojiCatHeartEyes"
+        case emojiHibiscus = "emojiHibiscus"
+        case emojiDog = "emojiDog"
+        case emojiHeart = "emojiHeart"
+        case emojiScream = "emojiScream"
+        case emojiAngel = "emojiAngel"
+        case emojiAngry = "emojiAngry"
+        case emojiColdFace = "emojiColdFace"
+        case emojiThinking = "emojiThinking"
+        case emojiRaisedHands = "emojiRaisedHands"
+        case emojiBurger = "emojiBurger"
+        case emojiBroccoli = "emojiBroccoli"
+        case emojiTableTennis = "emojiTableTennis"
+        case emojiGoldMedal = "emojiGoldMedal"
+        case emojiGuitar = "emojiGuitar"
+        case emojiIsland = "emojiIsland"
+        case emojiSleepy = "emojiSleepy"
         
         static var allCasesList: [EmojiImage] { allCases }
         static var allImageNames: [String] { allCases.map { $0.imageName } }
