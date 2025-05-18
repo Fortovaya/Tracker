@@ -9,34 +9,42 @@ import UIKit
 struct GeometricParams {
     let cellCount: Int
     let cellSpacing: CGFloat
+    let leftInset: CGFloat
+    let rightInset: CGFloat
     
-    init(cellCount: Int, cellSpacing: CGFloat) {
+    init(cellCount: Int, cellSpacing: CGFloat, leftInset: CGFloat, rightInset: CGFloat) {
         self.cellCount = cellCount
         self.cellSpacing = cellSpacing
+        self.leftInset = leftInset
+        self.rightInset = rightInset
     }
 }
 
 final class TrackerCollectionServices: NSObject {
     
+    private weak var cellDelegate: TrackerCellDelegate?
+    
     private let params: GeometricParams
     private unowned let collection: UICollectionView
     private let headerTitles: [String]
-    private let footerTitles: [String]
+    private var footerTitles: [String]
     
     var emojis: [Resources.EmojiImage] = []
-    var categories: [TrackerCategory] = []
+    private var categories: [TrackerCategory] = []
 
     init(categories: [TrackerCategory],
          params: GeometricParams,
          collection: UICollectionView,
          headerTitles: [String],
-         footerTitles: [String]
+         footerTitles: [String],
+         cellDelegate: TrackerCellDelegate
     ) {
         self.categories = categories
         self.params = params
         self.collection = collection
         self.headerTitles = headerTitles
         self.footerTitles = footerTitles
+        self.cellDelegate = cellDelegate
         super.init()
         
         registrationElements()
@@ -49,30 +57,33 @@ final class TrackerCollectionServices: NSObject {
         collection.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
         collection.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                             withReuseIdentifier: HeaderView.headerReuseIdentifier)
-        collection.register(FooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-                            withReuseIdentifier: FooterView.footerReuseIdentifier)
     }
     
     private func calculateCellWidth(for collectionView: UICollectionView) -> CGFloat {
-        let totalSpacing = params.cellSpacing * CGFloat(params.cellCount - 1)
-        let availableWidth = collectionView.bounds.width - totalSpacing
+        let totalInterItemSpacing = params.cellSpacing * CGFloat(params.cellCount - 1)
+        let totalInsets = params.leftInset + params.rightInset
+        let availableWidth = collectionView.bounds.width - totalInterItemSpacing - totalInsets
         return availableWidth / CGFloat(params.cellCount)
     }
-
+    
     func updateCategories(with newCategories: [TrackerCategory]) {
+        let defaultFooters = newCategories.map { "\($0.trackers.count) трекеров" }
+        updateCategories(with: newCategories, footerTitles: defaultFooters)
+    }
+
+
+    func updateCategories(with newCategories: [TrackerCategory], footerTitles: [String]) {
         self.categories = newCategories
+        self.footerTitles  = footerTitles
         collection.reloadData()
     }
     
     func addEmoji(named rawName: String) {
-        // Пытаемся создать case из rawValue
         guard let emoji = Resources.EmojiImage(rawValue: rawName) else {
             print("❌ Эмодзи «\(rawName)» не найдено в Resources.EmojiImage")
             return
         }
-        // Добавляем в модель
         emojis.append(emoji)
-        // Вставляем новую ячейку в конец
         let newIndex = emojis.count - 1
         collection.insertItems(at: [IndexPath(item: newIndex, section: 0)])
     }
@@ -84,31 +95,25 @@ extension TrackerCollectionServices: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets (top: 12, left: 0, bottom: 16, right: 0)
+        return UIEdgeInsets (top: 12, left: params.leftInset, bottom: 16, right: params.rightInset)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = calculateCellWidth(for: collectionView)
-        return CGSize(width: width, height: width * 1.2)
+        return CGSize(width: width, height: 148)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
         
-        return CGSize(width: collectionView.bounds.width, height: 40)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
-                        referenceSizeForFooterInSection section: Int) -> CGSize {
-        
-        return CGSize(width: collectionView.bounds.width, height: 58)
+        return CGSize(width: collectionView.bounds.width, height: 36)
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return params.cellSpacing
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -143,10 +148,16 @@ extension TrackerCollectionServices: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
+        cell.delegate = cellDelegate
+        
+        let date = (cellDelegate as? TrackerViewController)?.currentDate ?? Date()
+        
         cell.configureCell(
             with: emoji,
             text: tracker.nameTrackers,
-            color: tracker.colorTrackers
+            color: tracker.colorTrackers,
+            idTrackers: tracker.idTrackers,
+            for: date
         )
         return cell
     }
@@ -165,25 +176,9 @@ extension TrackerCollectionServices: UICollectionViewDataSource {
                 ) as! HeaderView
                 header.setupTitleHeader(title: categories[indexPath.section].title)
                 return header
-                
-            case UICollectionView.elementKindSectionFooter:
-                let footer = collectionView.dequeueReusableSupplementaryView(
-                    ofKind: kind,
-                    withReuseIdentifier: FooterView.footerReuseIdentifier,
-                    for: indexPath
-                ) as! FooterView
-                
-                footer.setupTitleFooter(forSection: indexPath.section, delegate: self, title: "")
-                return footer
-                
+              
             default:
                 return UICollectionReusableView()
         }
-    }
-}
-
-extension TrackerCollectionServices: FooterViewDelegate {
-    func footerViewDidTapPlusButton(_ footerView: FooterView, inSection section: Int) {
-        print("Плюс в футере секции \(section) нажали!")
     }
 }
