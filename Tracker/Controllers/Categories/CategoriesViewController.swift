@@ -15,7 +15,7 @@ final class CategoriesViewController: BaseController {
     var selectCategoryButtonIsHidden: Bool {
         return selectCategoryButton.isImageHidden
     }
-   
+    
     //MARK: - Private lazy var
     private lazy var selectCategoryButton = MakeSelectCategoryButton(
         title: "Домашний уют",
@@ -25,8 +25,8 @@ final class CategoriesViewController: BaseController {
     )
     
     private lazy var addNewCategoriesButton = BaseButton(title: .addCategory,
-                                               target: self,
-                                               action: #selector(didTapNewCategories))
+                                                         target: self,
+                                                         action: #selector(didTapNewCategories))
     //MARK: - Life Cycle
     override func viewDidLoad(){
         super.viewDidLoad()
@@ -53,7 +53,7 @@ final class CategoriesViewController: BaseController {
         
         selectCategoryButton.isImageHidden = isImageInitiallyHidden
     }
-    
+    // MARK: - Action
     @objc private func didTapSelectCategory(){
         selectCategoryButton.isImageHidden.toggle()
         let title = selectCategoryButton.title(for: .normal) ?? ""

@@ -61,6 +61,7 @@ extension UITextField {
         return textField
     }
     
+    // MARK: - Action
     @objc private func clearButtonTapped() {
         self.text = nil
         self.sendActions(for: .editingChanged)

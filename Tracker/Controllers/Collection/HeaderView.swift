@@ -10,6 +10,7 @@ final class HeaderView: UICollectionReusableView {
     
     static let headerReuseIdentifier = Identifier.TrackerCollection.headerView.text
     
+    // MARK: Private variables
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlack
@@ -18,17 +19,19 @@ final class HeaderView: UICollectionReusableView {
         return label
     }()
     
+    //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         configurationHeaderView()
     }
     
+    //MARK: - required
     required init?(coder: NSCoder) {
         assertionFailure("init(coder:) has not been implemented")
         return nil
     }
     
+    // MARK: -Private Methods
     private func configurationHeaderView(){
         addSubview(titleLabel)
         
@@ -44,7 +47,7 @@ final class HeaderView: UICollectionReusableView {
         backgroundColor = .clear
     }
     
-   func setupTitleHeader(title: String){
+    func setupTitleHeader(title: String){
         titleLabel.text = title
     }
 }

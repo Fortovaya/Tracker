@@ -14,7 +14,7 @@ final class EventsViewController: BaseController {
                                                      cornerRadius: 16,
                                                      target: self,
                                                      action: #selector(didTapCategoryButton))
-        
+    
     private lazy var cancelButton = BaseButton(title: .cancel,
                                                backgroundColor:.clear,
                                                titleColor: .ypRed,
@@ -45,7 +45,7 @@ final class EventsViewController: BaseController {
         stack.distribution = .fillEqually
         return stack
     }()
-    
+    // MARK: - Life Cycle
     override func viewDidLoad(){
         super.viewDidLoad()
         setCenteredInlineTitle(title: .newEvents)
@@ -69,11 +69,11 @@ final class EventsViewController: BaseController {
             bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                                                              constant: -20),
             bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        
+            
         ])
     }
     
-   
+    // MARK: - Action
     @objc private func didTapCategoryButton(){
         //TO DO:
     }

@@ -7,9 +7,10 @@
 import UIKit
 
 final class NewHabitViewController: BaseController {
-    
+    // MARK: - Delegate
     weak var delegate: NewHabitViewControllerDelegate?
     
+    //MARK: - Private variables
     private var selectedDays: Set<WeekDay> = [] {
         didSet {
             orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
@@ -62,12 +63,14 @@ final class NewHabitViewController: BaseController {
         return stack
     }()
     
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNewHabitViewController()
         updateSaveButtonState()
     }
     
+    // MARK: - Private Methods
     private func setupNewHabitViewController(){
         view.addSubview(inputTextField)
         view.addSubview(buttonStackView)
@@ -104,6 +107,7 @@ final class NewHabitViewController: BaseController {
         saveButton.backgroundColor = enabled ? .ypBlack : .ypGray
     }
     
+    // MARK: - Action
     @objc private func tapCategoryButton(){
         let categoriesVC = CategoriesViewController()
         categoriesVC.delegate = self
@@ -148,19 +152,22 @@ final class NewHabitViewController: BaseController {
     }
 }
 
-extension NewHabitViewController: ScheduleViewControllerDelegate, CategoriesVCDelegate {
-    
+//MARK: ScheduleViewControllerDelegate
+extension NewHabitViewController: ScheduleViewControllerDelegate {
+    func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekDay>) {
+        selectedDays = days
+        scheduleButton.setSubtitle(selectedDaysString)
+        updateSaveButtonState()
+    }
+}
+
+//MARK: CategoriesVCDelegate
+extension NewHabitViewController: CategoriesVCDelegate {
     func categoriesViewController(_ controller: CategoriesViewController, didSelectCategory title: String,
                                   isImageHidden: Bool) {
         selectedCategory = title
         categoryButton.setSubtitle(title)
         isCategoryImageHidden = isImageHidden
-        updateSaveButtonState()
-    }
-    
-    func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekDay>) {
-        selectedDays = days
-        scheduleButton.setSubtitle(selectedDaysString)
         updateSaveButtonState()
     }
 }

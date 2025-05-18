@@ -7,7 +7,7 @@
 import UIKit
 
 final class TrackerCell: UICollectionViewCell {
-    
+    // MARK: - Enum Constants
     private enum Constants {
         static let contentCornerRadius: CGFloat = 16
         static let emojiContainerSize: CGFloat = 24
@@ -17,10 +17,11 @@ final class TrackerCell: UICollectionViewCell {
         static let plusButtonSize: CGFloat = 34
         static let bottomSpacing: CGFloat = 8
     }
-    
+    //MARK: - Delegate
     weak var delegate: TrackerCellDelegate?
     
     static let identifier = Identifier.TrackerCollection.trackerCell.text
+    // MARK: - Private variables
     private var trackerId: UUID?
     
     private lazy var containerCellView: UIView = {
@@ -37,7 +38,6 @@ final class TrackerCell: UICollectionViewCell {
         return view
     }()
     
-    /// текст который передаю по делегату
     private lazy var trackerLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .medium)
@@ -49,23 +49,23 @@ final class TrackerCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    /// вьюха под смайлик
+    
     private lazy var emojiContainerView: UIView = {
         let smileView = UIView()
         smileView.backgroundColor = UIColor.ypWhite.withAlphaComponent(0.3)
         smileView.layer.cornerRadius = Constants.emojiContainerSize / 2
         smileView.clipsToBounds = true
-        smileView.translatesAutoresizingMaskIntoConstraints = false 
+        smileView.translatesAutoresizingMaskIntoConstraints = false
         return smileView
     }()
-    /// сам смайлик
+    
     private lazy var emojiImageView: UIImageView = {
         let emojiSmile = UIImageView()
         emojiSmile.contentMode = .scaleAspectFit
         emojiSmile.translatesAutoresizingMaskIntoConstraints = false
         return emojiSmile
     }()
-    /// текст в footer
+    
     private lazy var daysLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .medium)
@@ -94,7 +94,7 @@ final class TrackerCell: UICollectionViewCell {
         button.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
         return button
     }()
-    /// вьюха под footer
+    
     private lazy var emojiFooterView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -106,7 +106,7 @@ final class TrackerCell: UICollectionViewCell {
         
         return view
     }()
-            
+    
     private lazy var collectionCellStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [containerCellView, emojiFooterView])
         stack.axis = .vertical
@@ -116,13 +116,16 @@ final class TrackerCell: UICollectionViewCell {
         return stack
     }()
     
+    // MARK: - Override Methods
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCell()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        assertionFailure("init(coder:) has not been implemented")
+        return nil
     }
     
     override func prepareForReuse(){
@@ -133,6 +136,7 @@ final class TrackerCell: UICollectionViewCell {
         resetCell()
     }
     
+    // MARK: - Private Methods
     private func resetCell(){
         contentView.backgroundColor = nil
         emojiImageView.image = nil
@@ -163,22 +167,22 @@ final class TrackerCell: UICollectionViewCell {
             emojiContainerView.topAnchor.constraint(equalTo: containerCellView.topAnchor, constant: Constants.padding),
             emojiContainerView.leadingAnchor.constraint(equalTo: containerCellView.leadingAnchor, constant: Constants.padding),
             emojiContainerView.trailingAnchor.constraint(lessThanOrEqualTo: containerCellView.trailingAnchor,constant: -131),
-          
+            
             emojiImageView.centerXAnchor.constraint(equalTo: emojiContainerView.centerXAnchor),
             emojiImageView.centerYAnchor.constraint(equalTo: emojiContainerView.centerYAnchor),
             emojiImageView.widthAnchor.constraint(equalToConstant: 24),
             emojiImageView.heightAnchor.constraint(equalToConstant: 24),
-           
+            
             trackerLabel.topAnchor.constraint(equalTo: emojiContainerView.bottomAnchor, constant: Constants.padding),
             trackerLabel.leadingAnchor.constraint(equalTo: containerCellView.leadingAnchor, constant: Constants.padding),
             trackerLabel.trailingAnchor.constraint(equalTo: containerCellView.trailingAnchor, constant: -Constants.padding),
             trackerLabel.bottomAnchor.constraint(equalTo: containerCellView.bottomAnchor, constant: -Constants.padding),
             trackerLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 34),
-           
+            
             plusButton.topAnchor.constraint(equalTo: emojiFooterView.topAnchor, constant: 8),
             plusButton.trailingAnchor.constraint(equalTo: emojiFooterView.trailingAnchor, constant: -12),
             plusButton.bottomAnchor.constraint(equalTo: emojiFooterView.bottomAnchor, constant: -16),
-      
+            
             daysLabel.heightAnchor.constraint(equalToConstant: maxLabelHeight),
             daysLabel.centerYAnchor.constraint(equalTo: plusButton.centerYAnchor),
             daysLabel.trailingAnchor.constraint(equalTo: plusButton.leadingAnchor),
@@ -189,6 +193,13 @@ final class TrackerCell: UICollectionViewCell {
         trackerLabel.setContentCompressionResistancePriority(.required, for: .vertical)
     }
     
+    private func updatePlusButtonAlpha() {
+        guard let baseColor = containerCellView.backgroundColor else { return }
+        let alpha: CGFloat = plusButton.isSelected ? 0.5 : 1.0
+        plusButton.backgroundColor = baseColor.withAlphaComponent(alpha)
+    }
+    
+    //MARK: - Public Methods
     func configureCell(with emoji: Resources.EmojiImage,
                        text: String,
                        color: UIColor,
@@ -207,12 +218,8 @@ final class TrackerCell: UICollectionViewCell {
         updatePlusButtonAlpha()
     }
     
-    func updatePlusButtonAlpha() {
-        guard let baseColor = containerCellView.backgroundColor else { return }
-        let alpha: CGFloat = plusButton.isSelected ? 0.5 : 1.0
-        plusButton.backgroundColor = baseColor.withAlphaComponent(alpha)
-    }
-        
+    
+    
     //MARK: - Action
     @objc private func didTapPlusButton(){
         plusButton.isSelected.toggle()

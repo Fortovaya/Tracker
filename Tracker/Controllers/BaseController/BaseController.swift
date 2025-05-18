@@ -7,12 +7,12 @@
 import UIKit
 
 class BaseController: UIViewController {
-    
+    // MARK: - Life Cycle
     override func viewDidLoad(){
         super.viewDidLoad()
         configureViewController()
     }
-    
+    //MARK: - Private Methods
     private func configureViewController(){
         view.backgroundColor = .ypWhite
         hideKeyboardWhenTappedAround()
@@ -41,10 +41,6 @@ class BaseController: UIViewController {
         view.addGestureRecognizer(tap)
     }
     
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
     final func presentPageSheet(
         viewController: UIViewController,
         animated: Bool = true,
@@ -62,5 +58,9 @@ class BaseController: UIViewController {
             rootVC = parent
         }
         rootVC?.dismiss(animated: animated, completion: completion)
+    }
+    // MARK: - Action
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

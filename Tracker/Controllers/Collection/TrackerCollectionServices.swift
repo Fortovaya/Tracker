@@ -21,9 +21,10 @@ struct GeometricParams {
 }
 
 final class TrackerCollectionServices: NSObject {
-    
+    //MARK: - Delegate
     private weak var cellDelegate: TrackerCellDelegate?
     
+    //MARK: - Private variables
     private let params: GeometricParams
     private unowned let collection: UICollectionView
     private let headerTitles: [String]
@@ -31,7 +32,8 @@ final class TrackerCollectionServices: NSObject {
     
     var emojis: [Resources.EmojiImage] = []
     private var categories: [TrackerCategory] = []
-
+    
+    // MARK: - init
     init(categories: [TrackerCategory],
          params: GeometricParams,
          collection: UICollectionView,
@@ -53,6 +55,7 @@ final class TrackerCollectionServices: NSObject {
         collection.reloadData()
     }
     
+    //MARK: - Private Methods
     private func registrationElements(){
         collection.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
         collection.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -70,15 +73,14 @@ final class TrackerCollectionServices: NSObject {
         let defaultFooters = newCategories.map { "\($0.trackers.count) трекеров" }
         updateCategories(with: newCategories, footerTitles: defaultFooters)
     }
-
-
+    
     func updateCategories(with newCategories: [TrackerCategory], footerTitles: [String]) {
         self.categories = newCategories
         self.footerTitles  = footerTitles
         collection.reloadData()
     }
     
-    func addEmoji(named rawName: String) {
+    private func addEmoji(named rawName: String) {
         guard let emoji = Resources.EmojiImage(rawValue: rawName) else {
             print("❌ Эмодзи «\(rawName)» не найдено в Resources.EmojiImage")
             return
@@ -176,7 +178,7 @@ extension TrackerCollectionServices: UICollectionViewDataSource {
                 ) as! HeaderView
                 header.setupTitleHeader(title: categories[indexPath.section].title)
                 return header
-              
+                
             default:
                 return UICollectionReusableView()
         }

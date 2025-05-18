@@ -70,6 +70,7 @@ final class CalendarViewController: UIViewController {
         ])
     }
     
+    // MARK: - Action
     @objc private func backgroundTapped(_ gesture: UITapGestureRecognizer) {
         // Проверка тапа внутри календаря
         let touchLocation = gesture.location(in: view)

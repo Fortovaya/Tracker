@@ -11,9 +11,8 @@ final class TrackerViewController: BaseController {
     //MARK: Private variable
     private var helper: TrackerCollectionServices?
     let params = GeometricParams(cellCount: 2, cellSpacing: 10, leftInset: 16, rightInset: 16)
-    /// список категорий и трекеров
+   
     private var categories: [TrackerCategory] = []
-    /// выполненные трекеры (после нажатия на +, добавляется запись в completedTrackers
     private var completedTrackers: [TrackerRecord] = []
     private var newTrackers: [Tracker] = []
     private(set) var currentDate: Date = Date()
@@ -100,7 +99,7 @@ final class TrackerViewController: BaseController {
         return searchController
     }()
     
-    var trackerCollectionMain: UICollectionView = {
+    private lazy var trackerCollectionMain: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -164,6 +163,7 @@ final class TrackerViewController: BaseController {
         navigationItem.rightBarButtonItem = rightItemButton
     }
     
+    // MARK: - Action
     @objc private func tapAddTrackerButton() {
         let typeVC = TrackerTypeViewController()
         typeVC.habitDelegate = self
@@ -242,7 +242,7 @@ final class TrackerViewController: BaseController {
         }) {
             completedTrackers.remove(at: index)
             print ("❌ Удален id трекера из completedTrackers: \(trackerId)")
-            print(completedTrackers.count)
+            print("✅ Кол-во трекеров в completedTrackers: \(completedTrackers.count)")
         } else {
             completedTrackers.append(
                 TrackerRecord(
@@ -252,7 +252,7 @@ final class TrackerViewController: BaseController {
                 )
             )
             print ("✅ Добавлен id трекера в completedTrackers: \(trackerId)")
-            print(completedTrackers.count)
+            print("✅ Кол-во трекеров в completedTrackers: \(completedTrackers.count)")
         }
     }
     

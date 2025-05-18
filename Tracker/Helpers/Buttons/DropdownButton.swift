@@ -7,7 +7,7 @@
 import UIKit
 
 final class DropdownButton: HighlightableButton {
-    
+    //MARK: - Private variables
     private lazy var label = UILabel()
     private lazy var chevron = UIImageView()
     private lazy var contentStack = UIStackView()
@@ -24,7 +24,7 @@ final class DropdownButton: HighlightableButton {
         return label
     }()
     
-    
+    // MARK: - Init
     init(
         title: Resources.TitleButtons,
         font: UIFont = .systemFont(ofSize: 17, weight: .regular),
@@ -44,13 +44,13 @@ final class DropdownButton: HighlightableButton {
         setupConstraints(horizontalInset: horizontalInset)
         setupTarget(target: target, action: action)
     }
-    
+    // MARK: - Override Methods
     override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
         super.setTitleColor(color, for: state)
         label.textColor = color
         chevron.tintColor = color
     }
-        
+    
     // MARK: - Private Methods
     private func setupAppearance(backgroundColor: UIColor, height: CGFloat, cornerRadius: CGFloat ) {
         self.backgroundColor = backgroundColor
@@ -114,7 +114,8 @@ final class DropdownButton: HighlightableButton {
     func setSubtitle(_ text: String) {
         secondaryLabel.text = text
     }
-        
+    
+    // MARK: - required
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         assertionFailure("init(coder:) has not been implemented")

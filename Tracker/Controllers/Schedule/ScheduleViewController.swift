@@ -9,7 +9,7 @@ import UIKit
 final class ScheduleViewController: BaseController {
     //MARK: - Delegate
     weak var delegate: ScheduleViewControllerDelegate?
-    //MARK: - Private lazy var
+    //MARK: - Private variables
     private lazy var dayViews: [UIView] = []
     private lazy var switches: [UISwitch] = []
     private lazy var selectedDays: Set<WeekDay> = []
@@ -129,6 +129,7 @@ final class ScheduleViewController: BaseController {
         self.initialSelectedDays = initialDays
     }
     
+    // MARK: - Action
     @objc private func switchChanged(_ sender: UISwitch) {
         guard let day = WeekDay(rawValue: sender.tag) else { return }
         

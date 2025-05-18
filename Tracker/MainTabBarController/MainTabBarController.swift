@@ -7,7 +7,7 @@
 import UIKit
 
 final class MainTabBarController: UITabBarController {
-    
+    // MARK: - Enum
     private enum Tab: Int {
         case trackers = 0
         case statistics = 1
@@ -36,6 +36,7 @@ final class MainTabBarController: UITabBarController {
         }
     }
     
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         overrideUserInterfaceStyle = .light
@@ -47,6 +48,7 @@ final class MainTabBarController: UITabBarController {
         setupMainTabBarController()
     }
     
+    // MARK: Private Methods
     private func setupMainTabBarController() {
         view.backgroundColor = .ypWhite
         tabBar.isTranslucent = false

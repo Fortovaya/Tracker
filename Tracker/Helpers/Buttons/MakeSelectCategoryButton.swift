@@ -7,7 +7,7 @@
 import UIKit
 
 final class MakeSelectCategoryButton: HighlightableButton {
-    
+    // MARK: - Private variables
     private let horizontalPadding: CGFloat = 16
     private let imageRightPadding: CGFloat = 16
     private let imageWidth: CGFloat = 14
@@ -22,7 +22,7 @@ final class MakeSelectCategoryButton: HighlightableButton {
             setNeedsLayout()
         }
     }
-    
+    // MARK: - Init
     init(
         title: String,
         backgroundColor: UIColor = .ypBackgroundTF,
@@ -48,10 +48,34 @@ final class MakeSelectCategoryButton: HighlightableButton {
                         action: action)
     }
     
+    // MARK: - required
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        assertionFailure("init(coder:) has not been implemented")
+        return nil
     }
     
+    // MARK: - Override Methods
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        imageView?.isHidden = shouldHideImage
+        guard let imageView = imageView, !imageView.isHidden else { return }
+        let availableWidth = bounds.width - horizontalPadding - imageRightPadding - imageWidth - spacing
+        
+        imageEdgeInsets = UIEdgeInsets(
+            top: 0,
+            left: availableWidth,
+            bottom: 0,
+            right: -availableWidth
+        )
+        
+        titleLabel?.frame.size.width = min(
+            titleLabel?.frame.width ?? 0,
+            availableWidth
+        )
+    }
+    
+    // MARK: - Private Methods
     private func configureButton(
         title: String,
         backgroundColor: UIColor,
@@ -93,27 +117,5 @@ final class MakeSelectCategoryButton: HighlightableButton {
         
         translatesAutoresizingMaskIntoConstraints = false
         addTarget(target, action: action, for: .touchUpInside)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        imageView?.isHidden = shouldHideImage
-        
-        guard let imageView = imageView, !imageView.isHidden else { return }
-        
-        let availableWidth = bounds.width - horizontalPadding - imageRightPadding - imageWidth - spacing
-        
-        imageEdgeInsets = UIEdgeInsets(
-            top: 0,
-            left: availableWidth,
-            bottom: 0,
-            right: -availableWidth
-        )
-        
-        titleLabel?.frame.size.width = min(
-            titleLabel?.frame.width ?? 0,
-            availableWidth
-        )
     }
 }

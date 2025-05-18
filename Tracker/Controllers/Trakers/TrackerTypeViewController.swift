@@ -47,6 +47,7 @@ final class TrackerTypeViewController: BaseController {
         ])
     }
     
+    // MARK: - Action
     @objc private func tapHabitButton(){
         let newVC = NewHabitViewController()
         newVC.delegate = habitDelegate
