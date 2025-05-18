@@ -163,35 +163,6 @@ final class TrackerViewController: BaseController {
         navigationItem.rightBarButtonItem = rightItemButton
     }
     
-    // MARK: - Action
-    @objc private func tapAddTrackerButton() {
-        let typeVC = TrackerTypeViewController()
-        typeVC.habitDelegate = self
-        presentPageSheet(viewController: typeVC)
-    }
-    
-    @objc private func tapDateButton() {
-        let calendarVC = CalendarViewController()
-        calendarVC.modalPresentationStyle = .overCurrentContext
-        calendarVC.modalTransitionStyle = .crossDissolve
-        
-        calendarVC.onDatePicked = { [weak self] selectedDate in
-            guard let self = self else { return }
-            
-            self.currentDate = selectedDate
-            let title = DateFormatter.dateFormatter.string(from: selectedDate)
-            self.dateButton.setTitle(title, for: .normal)
-            
-            let weekDay = WeekDay.orderedWeekday(date: selectedDate)
-            print("✅ День недели выбранной даты: \(weekDay)")
-            
-            self.updateFooters(for: selectedDate)
-            self.filtersTrackers(for: weekDay)
-            print(" Выбрана дата: \(title)")
-        }
-        present(calendarVC, animated: true)
-    }
-    
     private func setupHelper(){
         let headerTitles = categories.map { $0.title }
         let footerTitles = categories.map { category in
@@ -289,6 +260,34 @@ final class TrackerViewController: BaseController {
         updatePlaceholderVisibility(using: filtered)
     }
     
+    // MARK: - Action
+    @objc private func tapAddTrackerButton() {
+        let typeVC = TrackerTypeViewController()
+        typeVC.habitDelegate = self
+        presentPageSheet(viewController: typeVC)
+    }
+    
+    @objc private func tapDateButton() {
+        let calendarVC = CalendarViewController()
+        calendarVC.modalPresentationStyle = .overCurrentContext
+        calendarVC.modalTransitionStyle = .crossDissolve
+        
+        calendarVC.onDatePicked = { [weak self] selectedDate in
+            guard let self = self else { return }
+            
+            self.currentDate = selectedDate
+            let title = DateFormatter.dateFormatter.string(from: selectedDate)
+            self.dateButton.setTitle(title, for: .normal)
+            
+            let weekDay = WeekDay.orderedWeekday(date: selectedDate)
+            print("✅ День недели выбранной даты: \(weekDay)")
+            
+            self.updateFooters(for: selectedDate)
+            self.filtersTrackers(for: weekDay)
+            print(" Выбрана дата: \(title)")
+        }
+        present(calendarVC, animated: true)
+    }
 }
 
 extension TrackerViewController: UISearchResultsUpdating {
@@ -297,6 +296,7 @@ extension TrackerViewController: UISearchResultsUpdating {
     }
 }
 
+// MARK: NewHabitViewControllerDelegate
 extension TrackerViewController: NewHabitViewControllerDelegate {
     
     func newHabitViewController(_ controller: NewHabitViewController, didCreateTracker tracker: Tracker,
@@ -321,6 +321,7 @@ extension TrackerViewController: NewHabitViewControllerDelegate {
     }
 }
 
+// MARK: TrackerCellDelegate
 extension TrackerViewController: TrackerCellDelegate {
     
     func trackerCellDidTapPlus(_ cell: TrackerCell, id: UUID) {
