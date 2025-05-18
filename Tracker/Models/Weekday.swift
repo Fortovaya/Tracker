@@ -4,8 +4,16 @@
 //
 //  Created by Алина on 29.04.2025.
 //
+import Foundation
+
 enum WeekDay: Int, CaseIterable {
     case monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday
+    
+    static func orderedWeekday(date: Date) -> WeekDay {
+        let calendar = Calendar.current
+        let component = calendar.component(.weekday, from: date)
+        return WeekDay(rawValue: component == 1 ? 7 : component - 1)!
+    }
     
     var fullName: String {
         switch self {

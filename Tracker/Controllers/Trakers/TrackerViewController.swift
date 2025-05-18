@@ -182,9 +182,12 @@ final class TrackerViewController: BaseController {
             let title = DateFormatter.dateFormatter.string(from: selectedDate)
             self.dateButton.setTitle(title, for: .normal)
             
+            let weekDay = WeekDay.orderedWeekday(date: selectedDate)
+            print("✅ День недели выбранной даты: \(weekDay)")
+            
             self.updateFooters(for: selectedDate)
-            self.trackerCollectionMain.reloadData()
-            print("Выбрана дата: \(title)")
+            self.filtersTrackers(for: weekDay)
+            print("✅ Выбрана дата: \(title)")
         }
         present(calendarVC, animated: true)
     }
@@ -221,7 +224,6 @@ final class TrackerViewController: BaseController {
     }
     
     private func toggleTrackerCompletion(for trackerId: UUID, on date: Date) {
-//        guard date <= Date() else { return }
         let picked = Calendar.current.startOfDay(for: date)
         let today  = Calendar.current.startOfDay(for: Date())
         
@@ -268,6 +270,19 @@ final class TrackerViewController: BaseController {
         }
         
         helper?.updateCategories(with: categories, footerTitles: newFooters)
+    }
+    
+    private func filtersTrackers(for weekDay: WeekDay){
+        let filtered = categories.compactMap { category in
+            let trackers = category.trackers.filter {
+                $0.scheduleTrackers.contains(weekDay)
+            }
+            
+            return trackers.isEmpty ? nil : TrackerCategory(title: category.title, trackers: trackers)
+        }
+        
+        helper?.updateCategories(with: filtered)
+        updatePlaceholderVisibility()
     }
     
 }
