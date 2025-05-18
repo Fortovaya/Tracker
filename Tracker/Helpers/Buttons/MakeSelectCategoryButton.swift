@@ -28,7 +28,7 @@ final class MakeSelectCategoryButton: HighlightableButton {
         backgroundColor: UIColor = .ypBackgroundTF,
         titleColor: UIColor = .ypBlack,
         font: UIFont = .systemFont(ofSize: 17, weight: .regular),
-        image: UIImage? = UIImage(named: "checkmark"),
+        image: UIImage? = UIImage(named: Resources.ButtonIcons.checkmark.imageName),
         cornerRadius: CGFloat = 16,
         height: CGFloat = 75,
         tintColor: UIColor = .red,
