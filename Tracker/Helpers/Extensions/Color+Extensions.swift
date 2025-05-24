@@ -35,7 +35,7 @@ extension UIColor {
     static var ypCellColorPeriwinkle: UIColor { UIColor(named: "ypCellColorPeriwinkle") ?? UIColor.systemBlue }
     static var ypCellColorViolet: UIColor { UIColor(named: "ypCellColorViolet") ?? UIColor.systemPurple }
     static var ypCellColorLavender: UIColor { UIColor(named: "ypCellColorLavender") ?? UIColor.systemPurple }
-    static var ypCellColorLightPurple: UIColor { UIColor(named: "#8D72E6") ?? UIColor.systemPurple }
+    static var ypCellColorLightPurple: UIColor { UIColor(named: "ypCellColorLightPurple") ?? UIColor.systemPurple }
     static var ypCellColorLime: UIColor { UIColor(named: "ypCellColorLime") ?? UIColor.systemGreen }
     
     static var trackerCellColors: [UIColor] {
