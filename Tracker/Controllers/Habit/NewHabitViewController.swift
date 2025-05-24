@@ -138,7 +138,7 @@ final class NewHabitViewController: BaseController {
             !selectedDays.isEmpty
         else { return }
         /// не забыть убрать установку рандомного смайлика и цвета в коллекцию
-        let emoji = Resources.EmojiImage.allCases.randomElement()!.rawValue
+        guard let emoji = Resources.EmojiImage.allCases.randomElement()?.rawValue else { return }
         let randomColor = UIColor.trackerCellColors.randomElement() ?? .ypCellColorPink
         
         let tracker = Tracker(nameTrackers: name,
