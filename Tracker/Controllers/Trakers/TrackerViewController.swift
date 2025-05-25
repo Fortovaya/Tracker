@@ -10,7 +10,8 @@ final class TrackerViewController: BaseController {
     
     //MARK: Private variable
     private var helper: TrackerCollectionServices?
-    let params = GeometricParams(cellCount: 2, cellSpacing: 10, leftInset: 16, rightInset: 16)
+    let params = GeometricParams(cellCount: 2, cellSpacing: 10, leftInset: 16,
+                                 rightInset: 16, topInset: 12, bottomInset: 16)
    
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
