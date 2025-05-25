@@ -12,6 +12,8 @@ enum Identifier {
         case headerView = "HeaderView"
         case footerView = "FooterView"
         
+        case trackerStyleCell = "TrackerStyleCell"
+        
         var text: String { rawValue }
     }
 }
