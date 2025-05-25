@@ -17,9 +17,15 @@ final class NewHabitViewController: BaseController {
         }
     }
     
-    private var orderedSelectedDays: [WeekDay] = [] // выбранные дни
+    private var styleServices: TrackerStyleCollectionServices?
+    let params = GeometricParams(cellCount: 6, cellSpacing: 6, leftInset: 18,
+                                      rightInset: 19, topInset: 16, bottomInset: 24)
+    
+    private var orderedSelectedDays: [WeekDay] = []
     private var trackerName: String?
-    private var selectedCategory: String?  // выбранная категория
+    private var selectedCategory: String?
+    private var selectedEmoji: Resources.EmojiImage?
+    private var selectedColor: UIColor?
     
     private var selectedDaysString: String {
         orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
@@ -63,18 +69,25 @@ final class NewHabitViewController: BaseController {
         return stack
     }()
     
+    private lazy var styleCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.estimatedItemSize = .zero
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupHelper()
         setupNewHabitViewController()
         updateSaveButtonState()
     }
     
     // MARK: - Private Methods
     private func setupNewHabitViewController(){
-        view.addSubview(inputTextField)
-        view.addSubview(buttonStackView)
-        view.addSubview(bottomButtonsStackView)
+        view.addSubviews([inputTextField,buttonStackView, bottomButtonsStackView,styleCollectionView])
         
         [inputTextField, buttonStackView, bottomButtonsStackView].disableAutoresizingMask()
         
@@ -92,7 +105,12 @@ final class NewHabitViewController: BaseController {
                                                             constant: 20),
             bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                                                              constant: -20),
-            bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            styleCollectionView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor, constant: 16),
+            styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
         ])
         
         setCenteredInlineTitle(title: .newHabit)
@@ -102,9 +120,17 @@ final class NewHabitViewController: BaseController {
         let hasText = !(trackerName?.isEmpty ?? true)
         let hasCategory = !(selectedCategory?.isEmpty ?? true)
         let hasSchedule = !selectedDays.isEmpty
-        let enabled = hasText && hasCategory && hasSchedule
+        let hasEmoji = selectedEmoji != nil
+        let hasColor = selectedColor != nil
+        let enabled = hasText && hasCategory && hasSchedule && hasEmoji && hasColor
         saveButton.isEnabled = enabled
         saveButton.backgroundColor = enabled ? .ypBlack : .ypGray
+    }
+    
+    private func setupHelper(){
+        styleServices = TrackerStyleCollectionServices(paramsStyleCell: params,
+                                                       collection: styleCollectionView,
+                                                       cellDelegate: self)
     }
     
     // MARK: - Action
@@ -137,13 +163,15 @@ final class NewHabitViewController: BaseController {
             let category = selectedCategory,
             !selectedDays.isEmpty
         else { return }
-        /// не забыть убрать установку рандомного смайлика и цвета в коллекцию
-        guard let emoji = Resources.EmojiImage.allCases.randomElement()?.rawValue else { return }
-        let randomColor = UIColor.trackerCellColors.randomElement() ?? .ypCellColorPink
+        
+        guard
+            let selectedEmoji = selectedEmoji,
+            let selectedColor = selectedColor
+        else { return }
         
         let tracker = Tracker(nameTrackers: name,
-                              colorTrackers: randomColor,
-                              emojiTrackers: emoji,
+                              colorTrackers: selectedColor,
+                              emojiTrackers: selectedEmoji.rawValue,
                               scheduleTrackers: selectedDays)
         
         print("✅ Делегат получил трекер с id = \(tracker.idTrackers)")
@@ -168,6 +196,15 @@ extension NewHabitViewController: CategoriesVCDelegate {
         selectedCategory = title
         categoryButton.setSubtitle(title)
         isCategoryImageHidden = isImageHidden
+        updateSaveButtonState()
+    }
+}
+
+extension NewHabitViewController: TrackerStyleCellDelegate {
+    func trackerStyleCollectionServices(_ services: TrackerStyleCollectionServices, didSelectEmoji: Resources.EmojiImage,
+                                        andColor color: UIColor) {
+        selectedEmoji = didSelectEmoji
+        selectedColor = color
         updateSaveButtonState()
     }
 }
