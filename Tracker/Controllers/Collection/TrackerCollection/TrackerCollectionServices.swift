@@ -6,20 +6,6 @@
 //
 import UIKit
 
-struct GeometricParams {
-    let cellCount: Int
-    let cellSpacing: CGFloat
-    let leftInset: CGFloat
-    let rightInset: CGFloat
-    
-    init(cellCount: Int, cellSpacing: CGFloat, leftInset: CGFloat, rightInset: CGFloat) {
-        self.cellCount = cellCount
-        self.cellSpacing = cellSpacing
-        self.leftInset = leftInset
-        self.rightInset = rightInset
-    }
-}
-
 final class TrackerCollectionServices: NSObject {
     //MARK: - Delegate
     private weak var cellDelegate: TrackerCellDelegate?
@@ -97,7 +83,8 @@ extension TrackerCollectionServices: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets (top: 12, left: params.leftInset, bottom: 16, right: params.rightInset)
+        return UIEdgeInsets (top: params.topInset, left: params.leftInset,
+                             bottom: params.bottomInset, right: params.rightInset)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
@@ -171,11 +158,11 @@ extension TrackerCollectionServices: UICollectionViewDataSource {
     ) -> UICollectionReusableView {
         switch kind {
             case UICollectionView.elementKindSectionHeader:
-                let header = collectionView.dequeueReusableSupplementaryView(
+                guard let header = collectionView.dequeueReusableSupplementaryView(
                     ofKind: kind,
                     withReuseIdentifier: HeaderView.headerReuseIdentifier,
                     for: indexPath
-                ) as! HeaderView
+                ) as? HeaderView else { return UICollectionReusableView()}
                 header.setupTitleHeader(title: categories[indexPath.section].title)
                 return header
                 
