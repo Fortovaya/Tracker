@@ -6,7 +6,7 @@
 //
 import Foundation
 
-enum WeekDay: Int, CaseIterable {
+enum WeekDay: Int, CaseIterable, Codable {
     case monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday
     
     static func orderedWeekday(date: Date) -> WeekDay {
