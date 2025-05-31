@@ -348,9 +348,9 @@ extension TrackerViewController: TrackerCellDelegate {
     }
 
     func dayString(for count: Int) -> String {
-        let r10 = count % 10, r100 = count % 100
-        if r10 == 1 && r100 != 11 { return "день" }
-        if (2...4).contains(r10) && !(12...14).contains(r100) { return "дня" }
+        let lastDigit = count % 10, lastTwoDigits = count % 100
+        if lastDigit == 1 && lastTwoDigits != 11 { return "день" }
+        if (2...4).contains(lastDigit) && !(12...14).contains(lastTwoDigits) { return "дня" }
         return "дней"
     }
 }

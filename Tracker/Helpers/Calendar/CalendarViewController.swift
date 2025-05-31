@@ -73,17 +73,14 @@ final class CalendarViewController: UIViewController {
     // MARK: - Action
     @objc private func backgroundTapped(_ gesture: UITapGestureRecognizer) {
         // Проверка тапа внутри календаря
-        let touchLocation = gesture.location(in: view)
-        guard !containerView.frame.contains(touchLocation) else {
-            onDatePicked?(calendarPicker.date)
+        let location = gesture.location(in: view)
+        if !containerView.frame.contains(location) {
             dismiss(animated: true)
-            return
         }
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let picked = sender.date
         onDatePicked?(picked)
-        dismiss(animated: true)
     }
 }
