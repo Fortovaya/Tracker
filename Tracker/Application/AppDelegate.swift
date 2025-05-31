@@ -35,6 +35,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Не удалось загрузить Core Data store: \(error), \(error.userInfo)")
             }
         }
+        container.viewContext.automaticallyMergesChangesFromParent = true
         return container
     }()
     
