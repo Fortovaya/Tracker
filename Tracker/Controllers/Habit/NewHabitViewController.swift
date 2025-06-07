@@ -10,6 +10,8 @@ final class NewHabitViewController: BaseController {
     // MARK: - Delegate
     weak var delegate: NewHabitViewControllerDelegate?
     
+    private let store = TrackerStore()
+    
     //MARK: - Private variables
     private var selectedDays: Set<WeekDay> = [] {
         didSet {
@@ -18,8 +20,9 @@ final class NewHabitViewController: BaseController {
     }
     
     private var styleServices: TrackerStyleCollectionServices?
+    
     let params = GeometricParams(cellCount: 6, cellSpacing: 6, leftInset: 18,
-                                      rightInset: 19, topInset: 16, bottomInset: 24)
+                                 rightInset: 19, topInset: 16, bottomInset: 24)
     
     private var orderedSelectedDays: [WeekDay] = []
     private var trackerName: String?
@@ -161,21 +164,25 @@ final class NewHabitViewController: BaseController {
         guard
             let name = trackerName, !name.isEmpty,
             let category = selectedCategory,
-            !selectedDays.isEmpty
-        else { return }
-        
-        guard
+            !selectedDays.isEmpty,
             let selectedEmoji = selectedEmoji,
             let selectedColor = selectedColor
         else { return }
         
-        let tracker = Tracker(nameTrackers: name,
-                              colorTrackers: selectedColor,
-                              emojiTrackers: selectedEmoji.rawValue,
-                              scheduleTrackers: selectedDays)
+        let tracker = Tracker(
+            nameTrackers: name,
+            colorTrackers: selectedColor,
+            emojiTrackers: selectedEmoji.rawValue,
+            scheduleTrackers: selectedDays)
         
-        print("✅ Делегат получил трекер с id = \(tracker.idTrackers)")
-        delegate?.newHabitViewController(self, didCreateTracker: tracker, categoryTitle: category)
+        do {
+            try store.addNewTracker(tracker, categoryTitle: category)
+            print("✅ Делегат получил трекер с id = \(tracker.idTrackers)")
+            delegate?.newHabitViewController(self, didCreateTracker: tracker, categoryTitle: category)
+        } catch {
+            print("❌ Ошибка сохранения трекера: \(error)")
+        }
+        
         dismissToRootModal()
     }
 }
@@ -200,6 +207,7 @@ extension NewHabitViewController: CategoriesVCDelegate {
     }
 }
 
+//MARK: TrackerStyleCellDelegate
 extension NewHabitViewController: TrackerStyleCellDelegate {
     func trackerStyleCollectionServices(_ services: TrackerStyleCollectionServices, didSelectEmoji: Resources.EmojiImage,
                                         andColor color: UIColor) {
