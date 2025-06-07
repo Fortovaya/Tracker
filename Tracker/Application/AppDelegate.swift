@@ -26,7 +26,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Core Data stack
     
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "Tracker")
+        let container = NSPersistentContainer(name: "TrackerModel")
         
         DaysValueTransformer.register()
         
@@ -38,6 +38,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         container.viewContext.automaticallyMergesChangesFromParent = true
         return container
     }()
+    
+    static var viewContext: NSManagedObjectContext {
+        guard let delegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("❌ Не удалось получить AppDelegate для Core Data")
+        }
+        return delegate.persistentContainer.viewContext
+    }
     
     // MARK: — Core Data Saving support
     
