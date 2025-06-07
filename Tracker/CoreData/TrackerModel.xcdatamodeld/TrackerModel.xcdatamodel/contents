@@ -9,7 +9,7 @@
         <attribute name="emojiTrackers" attributeType="String"/>
         <attribute name="idTrackers" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="nameTrackers" attributeType="String"/>
-        <attribute name="scheduleTrackers" attributeType="Transformable" valueTransformerName="DaysValueTransformer"/>
+        <attribute name="scheduleTrackers" attributeType="Transformable" valueTransformerName="DaysValueTransformer" customClassName="NSSet"/>
         <relationship name="trackerCategory" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerCategoryCoreData" inverseName="trackers" inverseEntity="TrackerCategoryCoreData"/>
         <relationship name="trackerRecord" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerRecordCoreData" inverseName="trackerId" inverseEntity="TrackerRecordCoreData"/>
     </entity>

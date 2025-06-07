@@ -25,8 +25,8 @@ final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
     private let uiColorMarshalling = UIColorMarshalling()
     private let daysValueTransformer = DaysValueTransformer()
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
@@ -34,8 +34,13 @@ final class TrackerStore: NSObject {
     
     // MARK: - init
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        try! self.init(context: context)
+        let context = AppDelegate.viewContext
+        do {
+            try self.init(context: context)
+        } catch {
+            assertionFailure("❌ [TrackerStore \(#function):\(#line)] Couldn't init with context: \(error)")
+            try! self.init(context: context)
+        }
     }
     
     init(context: NSManagedObjectContext) throws {
@@ -43,15 +48,16 @@ final class TrackerStore: NSObject {
         super.init()
         
         let fetchRequest = TrackerCoreData.fetchRequest()
+        
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCoreData.scheduleTrackers, ascending: true)
+            NSSortDescriptor(keyPath: \TrackerCoreData.nameTrackers, ascending: true)
         ]
         
         let controller = NSFetchedResultsController(
-        fetchRequest: fetchRequest,
-        managedObjectContext: context,
-        sectionNameKeyPath: nil,
-        cacheName: nil
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
         )
         
         controller.delegate = self
@@ -60,9 +66,24 @@ final class TrackerStore: NSObject {
     }
     
     // MARK: - Public Methods
-    func addNewTracker(_ tracker: Tracker) throws {
+    func addNewTracker(_ tracker: Tracker, categoryTitle: String) throws {
         let trackerCoreData = TrackerCoreData(context: context)
         updateTrackerCoreData(trackerCoreData, with: tracker)
+        
+        let categoryRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        categoryRequest.predicate = NSPredicate(format: "title == %@", categoryTitle)
+        
+        let category: TrackerCategoryCoreData
+        if let existingCategory = try context.fetch(categoryRequest).first {
+            category = existingCategory
+        } else {
+            category = TrackerCategoryCoreData(context: context)
+            category.title = categoryTitle
+        }
+        
+        trackerCoreData.trackerCategory = category
+        category.addToTrackers(trackerCoreData)
+        
         try context.save()
     }
     /// поиск трекеров без учета регистра по полю nameTrackers
@@ -72,22 +93,14 @@ final class TrackerStore: NSObject {
         let results = try context.fetch(fetchRequest)
         return try results.map { try decodeTracker(from: $0) }
     }
-
-    // MARK: - Private Methods
-    private func updateTrackerCoreData(_ trackerCoreData: TrackerCoreData, with mix: Tracker){
-        trackerCoreData.idTrackers = mix.idTrackers
-        trackerCoreData.nameTrackers = mix.nameTrackers
-        trackerCoreData.colorTrackers = uiColorMarshalling.hexString(from: mix.colorTrackers)
-        trackerCoreData.emojiTrackers = mix.emojiTrackers
-        
-        if let data = daysValueTransformer.transformedValue(mix.scheduleTrackers) as? NSObject {
-            trackerCoreData.scheduleTrackers = data
-        } else {
-            print("❌ Ошибка сериализации scheduleTrackers")
-        }
-    }
     
-    private func decodeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
+    func fetchTrackerCoreData(by id: UUID) -> TrackerCoreData? {
+        let req: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        req.predicate = NSPredicate(format: "idTrackers == %@", id as CVarArg)
+        return (try? context.fetch(req))?.first
+    }
+
+    func decodeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
         guard let nameTrackers = trackerCoreData.nameTrackers else {
             throw TrackerStoreError.decodingErrorInvalidNameTrackers
         }
@@ -114,6 +127,15 @@ final class TrackerStore: NSObject {
                        emojiTrackers: emojiTrackers,
                        scheduleTrackers: scheduleTrackers
         )
+    }
+    
+    // MARK: - Private Methods
+    private func updateTrackerCoreData(_ trackerCoreData: TrackerCoreData, with mix: Tracker){
+        trackerCoreData.idTrackers = mix.idTrackers
+        trackerCoreData.nameTrackers = mix.nameTrackers
+        trackerCoreData.colorTrackers = uiColorMarshalling.hexString(from: mix.colorTrackers)
+        trackerCoreData.emojiTrackers = mix.emojiTrackers
+        trackerCoreData.scheduleTrackers = mix.scheduleTrackers as NSSet
     }
 }
 
@@ -153,21 +175,27 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controller( _ controller: NSFetchedResultsController<NSFetchRequestResult>,
                      didChange anObject: Any,at indexPath: IndexPath?, for type: NSFetchedResultsChangeType,
                      newIndexPath: IndexPath?) {
-        switch type {
-            case .insert:
-                guard let indexPath = newIndexPath else { fatalError() }
-                insertedIndexes?.insert(indexPath.item)
-            case .delete:
-                guard let indexPath = indexPath else { fatalError() }
-                deletedIndexes?.insert(indexPath.item)
-            case .update:
-                guard let indexPath = indexPath else { fatalError() }
-                updatedIndexes?.insert(indexPath.item)
-            case .move:
-                guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else { fatalError() }
-                movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
-            @unknown default:
-                fatalError()
+        do {
+            switch type {
+                case .insert:
+                    guard let indexPath = newIndexPath else { throw FetchedResultsError.missingNewIndexPath }
+                    insertedIndexes?.insert(indexPath.item)
+                case .delete:
+                    guard let indexPath = indexPath else { throw FetchedResultsError.missingIndexPath }
+                    deletedIndexes?.insert(indexPath.item)
+                case .update:
+                    guard let indexPath = indexPath else { throw FetchedResultsError.missingIndexPath }
+                    updatedIndexes?.insert(indexPath.item)
+                case .move:
+                    guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else {
+                        throw FetchedResultsError.missingOldOrNewIndexPath
+                    }
+                    movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
+                @unknown default:
+                    throw FetchedResultsError.unknownChangeType
+            }
+        } catch {
+            assertionFailure("❌ [\(Swift.type(of: self)) \(#function):\(#line)] FRC change error: \(error)")
         }
     }
 }
