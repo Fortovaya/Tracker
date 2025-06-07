@@ -17,6 +17,10 @@ final class TrackerViewController: BaseController {
     private var completedTrackers: [TrackerRecord] = []
     private var newTrackers: [Tracker] = []
     private(set) var currentDate: Date = Date()
+   
+    private let store = TrackerStore()
+    private let categoryStore = TrackerCategoryStore()
+    private let recordStore = TrackerRecordStore()
     
     private lazy var dizzyImage: UIImageView = {
         let image = UIImage(named: Resources.ImageNames.dizzy.imageName)
@@ -111,8 +115,13 @@ final class TrackerViewController: BaseController {
     //MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTopNavigationBar()
+        store.delegate = self
+        categoryStore.delegate = self
+        recordStore.delegate = self
         
+        loadCategories()
+        updateCompletedTrackers()
+        setupTopNavigationBar()
         setupHelper()
         configureConstraintsTrackerViewController()
         updatePlaceholderVisibility()
@@ -121,8 +130,8 @@ final class TrackerViewController: BaseController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupHelper()
-        updatePlaceholderVisibility()
+        loadCategories()
+        updateCompletedTrackers()
     }
 
     
@@ -193,38 +202,46 @@ final class TrackerViewController: BaseController {
         updatePlaceholderVisibility(using: categories)
     }
     
-    func updateCategories(_ newCategories: [TrackerCategory]) {
-        categories = newCategories
+    private func refreshUI() {
         setupHelper()
         updatePlaceholderVisibility()
     }
     
+    func updateCategories(_ newCategories: [TrackerCategory]) {
+        categories = newCategories
+        refreshUI()
+    }
+    
+    private func loadCategories() {
+        let fetched = categoryStore.fetchedCategories
+        categories = fetched
+        refreshUI()
+        let weekday = WeekDay.orderedWeekday(date: currentDate)
+        filtersTrackers(for: weekday)
+    }
+    
     private func toggleTrackerCompletion(for trackerId: UUID, on date: Date) {
         let picked = Calendar.current.startOfDay(for: date)
-        let today  = Calendar.current.startOfDay(for: Date())
+        let today = Calendar.current.startOfDay(for: Date())
         
         guard picked <= today else {
-            print("⚠️ Попытка отметить трекер для будущей даты: \(date)")
+            print("⚠️ Нельзя отметить трекер для будущей даты: \(date)")
             return
         }
         
-        if let index = completedTrackers.firstIndex(where: {
-            $0.trackerId == trackerId &&
-            Calendar.current.isDate($0.date, inSameDayAs: date)
-        }) {
-            completedTrackers.remove(at: index)
-            print ("❌ Удален id трекера из completedTrackers: \(trackerId)")
-            print("✅ Кол-во трекеров в completedTrackers: \(completedTrackers.count)")
-        } else {
-            completedTrackers.append(
-                TrackerRecord(
-                    id: UUID(),
-                    trackerId: trackerId,
-                    date: date
-                )
-            )
-            print ("✅ Добавлен id трекера в completedTrackers: \(trackerId)")
-            print("✅ Кол-во трекеров в completedTrackers: \(completedTrackers.count)")
+        do {
+            guard let trackerCD = store.fetchTrackerCoreData(by: trackerId) else { return }
+            
+            if let recordCD = recordStore.fetchRecordCoreData(trackerId: trackerId, on: picked) {
+                try recordStore.deleteRecord(recordCD)
+                print("❌ Удалили запись выполнения")
+            } else {
+                let record = TrackerRecord(id: UUID(), trackerId: trackerId, date: picked)
+                try recordStore.addNewTrackerRecordCoreData(record, for: trackerCD)
+                print("✅ Добавили запись выполнения")
+            }
+        } catch {
+            print("❌ Ошибка при обновлении отметки: \(error)")
         }
     }
     
@@ -259,6 +276,11 @@ final class TrackerViewController: BaseController {
         
         helper?.updateCategories(with: filtered)
         updatePlaceholderVisibility(using: filtered)
+    }
+
+    private func updateCompletedTrackers() {
+        completedTrackers = recordStore.fetchedRecords
+        updateFooters(for: currentDate)
     }
     
     // MARK: - Action
@@ -302,6 +324,7 @@ extension TrackerViewController: NewHabitViewControllerDelegate {
     
     func newHabitViewController(_ controller: NewHabitViewController, didCreateTracker tracker: Tracker,
                                 categoryTitle: String) {
+        
         if let indexPath = categories.firstIndex(where: { $0.title == categoryTitle }){
             let old = categories[indexPath]
             let updated = TrackerCategory(
@@ -352,5 +375,23 @@ extension TrackerViewController: TrackerCellDelegate {
         if lastDigit == 1 && lastTwoDigits != 11 { return "день" }
         if (2...4).contains(lastDigit) && !(12...14).contains(lastTwoDigits) { return "дня" }
         return "дней"
+    }
+}
+
+extension TrackerViewController: TrackerStoreDelegate {
+    func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
+        DispatchQueue.main.async { self.loadCategories() }
+    }
+}
+
+extension TrackerViewController: TrackerCategoryStoreDelegate {
+    func store(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
+        DispatchQueue.main.async { self.loadCategories() }
+    }
+}
+
+extension TrackerViewController: TrackerRecordStoreDelegate {
+    func store(_ store: TrackerRecordStore, didUpdate update: TrackerRecordStoreUpdate) {
+        DispatchQueue.main.async { self.updateCompletedTrackers() }
     }
 }
