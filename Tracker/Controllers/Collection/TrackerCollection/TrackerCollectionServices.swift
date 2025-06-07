@@ -61,9 +61,11 @@ final class TrackerCollectionServices: NSObject {
     }
     
     func updateCategories(with newCategories: [TrackerCategory], footerTitles: [String]) {
+        print("Обновление коллекции с \(newCategories.count) категориями")
         self.categories = newCategories
         self.footerTitles  = footerTitles
         collection.reloadData()
+        print("Коллекция обновлена")
     }
     
     private func addEmoji(named rawName: String) {
