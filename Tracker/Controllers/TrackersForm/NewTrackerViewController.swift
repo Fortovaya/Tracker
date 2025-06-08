@@ -1,5 +1,5 @@
 //
-//  NewHabitViewController.swift
+//  NewTrackerViewController.swift
 //  Tracker
 //
 //  Created by Алина on 30.04.2025.
@@ -8,7 +8,7 @@ import UIKit
 
 final class NewTrackerViewController: BaseController {
     // MARK: - Delegate
-    weak var delegate: NewHabitViewControllerDelegate?
+    weak var delegate: TrackerCreationViewControllerDelegate?
     
     private let store = TrackerStore()
     private let mode: TrackerCreationMode
@@ -104,12 +104,12 @@ final class NewTrackerViewController: BaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupHelper()
-        setupNewHabitViewController()
+        setupNewTrackerViewController()
         updateSaveButtonState()
     }
     
     // MARK: - Private Methods
-    private func setupNewHabitViewController(){
+    private func setupNewTrackerViewController(){
         if mode == .habit {
             view.addSubviews([inputTextField,buttonStackView, bottomButtonsStackView,styleCollectionView])
             [inputTextField, buttonStackView, bottomButtonsStackView].disableAutoresizingMask()
@@ -194,7 +194,7 @@ final class NewTrackerViewController: BaseController {
         
         do {
             try store.addNewTracker(tracker, categoryTitle: category)
-            delegate?.newHabitViewController(self, didCreateTracker: tracker, categoryTitle: category)
+            delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
             print("✅ Делегат получил трекер с id = \(tracker.idTrackers)")
         } catch {
             print("❌ Ошибка сохранения трекера: \(error)")

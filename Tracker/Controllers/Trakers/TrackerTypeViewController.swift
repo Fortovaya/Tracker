@@ -8,7 +8,7 @@ import UIKit
 
 final class TrackerTypeViewController: BaseController {
     //MARK: - Delegate
-    weak var habitDelegate: NewHabitViewControllerDelegate?
+    weak var habitDelegate: TrackerCreationViewControllerDelegate?
 
     //MARK: Private variables
     private lazy var habitButton = BaseButton(title: .habit,

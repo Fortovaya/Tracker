@@ -1,13 +1,13 @@
 //
-//  NewHabitViewControllerDelegate.swift
+//  TrackerCreationViewControllerDelegate.swift
 //  Tracker
 //
 //  Created by Алина on 11.05.2025.
 //
 import Foundation
 
-protocol NewHabitViewControllerDelegate: AnyObject {
-    func newHabitViewController(_ controller: NewTrackerViewController,
+protocol TrackerCreationViewControllerDelegate: AnyObject {
+    func trackerCreationViewController(_ controller: NewTrackerViewController,
                                 didCreateTracker tracker: Tracker, categoryTitle: String)
 }
 
