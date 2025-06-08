@@ -13,6 +13,7 @@ final class TrackerStyleCell: UICollectionViewCell {
         static let emojiVerticalPadding: CGFloat = 7
         static let emojiHorizontalPadding: CGFloat = 10
         static let colorPadding: CGFloat = 6
+        static let selectedCornerRadius: CGFloat = 16
     }
     
     private enum Kind {
@@ -122,7 +123,7 @@ final class TrackerStyleCell: UICollectionViewCell {
     }
     
     func setStyleSelectedCell(){
-        contentView.layer.cornerRadius = 16
+        contentView.layer.cornerRadius = Constants.selectedCornerRadius
         clipsToBounds = true
     }
 }
