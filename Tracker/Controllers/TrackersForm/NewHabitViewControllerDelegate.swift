@@ -7,7 +7,7 @@
 import Foundation
 
 protocol NewHabitViewControllerDelegate: AnyObject {
-    func newHabitViewController(_ controller: NewHabitViewController,
+    func newHabitViewController(_ controller: NewTrackerViewController,
                                 didCreateTracker tracker: Tracker, categoryTitle: String)
 }
 

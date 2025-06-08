@@ -322,7 +322,7 @@ extension TrackerViewController: UISearchResultsUpdating {
 // MARK: NewHabitViewControllerDelegate
 extension TrackerViewController: NewHabitViewControllerDelegate {
     
-    func newHabitViewController(_ controller: NewHabitViewController, didCreateTracker tracker: Tracker,
+    func newHabitViewController(_ controller: NewTrackerViewController, didCreateTracker tracker: Tracker,
                                 categoryTitle: String) {
         
         if let indexPath = categories.firstIndex(where: { $0.title == categoryTitle }){

@@ -21,6 +21,10 @@ enum WeekDay: Int, CaseIterable, Codable {
         return weekday
     }
     
+    static var current: WeekDay {
+        orderedWeekday(date: Date())
+    }
+    
     var fullName: String {
         switch self {
         case .monday: return "Понедельник"
