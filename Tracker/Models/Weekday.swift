@@ -6,13 +6,23 @@
 //
 import Foundation
 
-enum WeekDay: Int, CaseIterable {
+enum WeekDay: Int, CaseIterable, Codable {
     case monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday
     
     static func orderedWeekday(date: Date) -> WeekDay {
         let calendar = Calendar.current
-        let component = calendar.component(.weekday, from: date)
-        return WeekDay(rawValue: component == 1 ? 7 : component - 1)!
+        let gregorianWeekday = calendar.component(.weekday, from: date)
+        let rawValue = gregorianWeekday == 1 ? 7 : gregorianWeekday - 1
+        guard let weekday = WeekDay(rawValue: rawValue) else {
+            let todayComponent = calendar.component(.weekday, from: Date())
+            let todayRaw = (todayComponent == 1 ? 7 : todayComponent - 1)
+            return WeekDay(rawValue: todayRaw) ?? .monday
+        }
+        return weekday
+    }
+    
+    static var current: WeekDay {
+        orderedWeekday(date: Date())
     }
     
     var fullName: String {
@@ -39,11 +49,4 @@ enum WeekDay: Int, CaseIterable {
         case .sunday: return "Вс"
         }
     }
-}
-//оставила метод сортировки на случай если понадобится далее в проекте
-extension WeekDay {
-    static func orderedString(from selectedDays: Set<WeekDay>) -> String {
-         let orderedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
-         return orderedDays.map { $0.shortName }.joined(separator: ", ")
-     }
 }
