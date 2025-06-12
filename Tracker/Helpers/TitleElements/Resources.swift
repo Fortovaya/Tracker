@@ -33,6 +33,7 @@ enum Resources {
         case habit = "Привычка"
         case category = "Категория"
         case schedule = "Расписание"
+        case onBoarding = "Вот это технологии"
         
         var text: String { rawValue }
     }
@@ -91,5 +92,24 @@ enum Resources {
         static var allImageNames: [String] { allCases.map { $0.imageName } }
         
         var imageName: String { rawValue }
+    }
+    
+    enum OnboardingImage: String, CaseIterable{
+        case onBoardingBlue = "onBoardingBlue"
+        case onBoardingRed = "onBoardingRed"
+        
+        static var allCasesImage: [OnboardingImage] { allCases }
+        static var allImageNames: [String] { allCases.map { $0.imageName } }
+        
+        var imageName: String { rawValue }
+    }
+    
+    enum OnBoardingLabel: String {
+        case onBoardingBlue = "Отслеживайте только то, что хотите"
+        case onBoardingRed = "Даже если это не литры воды и йога"
+        
+//        stati
+        
+        var text: String { rawValue }
     }
 }
