@@ -111,6 +111,7 @@ final class OnboardingViewController: UIPageViewController {
     
     //MARK: - Private Action
     @objc private func didTapBoardingButton(){
+        OnBoardingStorage.isOnboardingCompleted = true
         guard let windowScene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
               let window = windowScene.windows.first
