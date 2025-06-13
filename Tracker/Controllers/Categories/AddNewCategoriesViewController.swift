@@ -47,6 +47,7 @@ final class AddNewCategoriesViewController: BaseController {
         updateSaveButtonState()
     }
     
+    //MARK: - Private Methods
     private func configurationAddNewCategoriesViewController(){
         view.addSubviews([saveCategoriesButton, tableView])
         [saveCategoriesButton, tableView].disableAutoresizingMask()
@@ -70,6 +71,7 @@ final class AddNewCategoriesViewController: BaseController {
         saveCategoriesButton.isEnabled = hasText
     }
     
+    //MARK: - Action
     @objc private func didTapSaveCategoriesButton(){
         do {
             try categoryStore.createCategory(title: newCategoryText)
@@ -80,13 +82,13 @@ final class AddNewCategoriesViewController: BaseController {
     }
 }
 
+//MARK: - UITableViewDataSource
 extension AddNewCategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AddNewCategoryCell.reuseIdentifier, for: indexPath)
                 as? AddNewCategoryCell else { return UITableViewCell() }
         
@@ -97,7 +99,7 @@ extension AddNewCategoriesViewController: UITableViewDataSource {
         return cell
     }
 }
-
+//MARK: - UITableViewDelegate
 extension AddNewCategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75

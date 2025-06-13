@@ -11,25 +11,18 @@ final class CategoriesViewController: BaseController {
     //MARK: - Delegate
     weak var delegate: CategoriesVCDelegate?
     
+    //MARK: - Public variables
     var isImageInitiallyHidden: Bool = true
-    var initialSelectedCategory: String?
     
-    private var categories: [String] = [] {
+    var initialSelectedCategory: String? {
         didSet {
-            tableView.reloadData()
-            updatePlaceholderVisibility()
+            viewModel.initialSelectedCategory = initialSelectedCategory
         }
     }
-    
-    private var selectedIndex: Int? {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    
-    private let store = TrackerCategoryStore()
     
     //MARK: - Private lazy var
+    private lazy var viewModel = CategoriesViewModel()
+    
     private lazy var addNewCategoriesButton = BaseButton(title: .addCategory,
                                                          target: self,
                                                          action: #selector(didTapNewCategoriesButton))
@@ -88,12 +81,11 @@ final class CategoriesViewController: BaseController {
         super.viewDidLoad()
         setCenteredInlineTitle(title: .category)
         configurationCategoriesVC()
-        loadCategoriesFromStore()
-        store.delegate = self
-        initialCheckmark()
+        bindViewModel()
+        viewModel.loadCategoriesFromStore()
     }
     
-    //MARK: - Private Method
+    //MARK: - Private Methods
     private func configurationCategoriesVC(){
         view.addSubviews([addNewCategoriesButton, tableView, categoryDizzyStackView])
         [addNewCategoriesButton, tableView, categoryDizzyStackView].disableAutoresizingMask()
@@ -116,23 +108,19 @@ final class CategoriesViewController: BaseController {
             categoryDizzyStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
         ])
-        updatePlaceholderVisibility()
     }
     
     private func updatePlaceholderVisibility(){
-        let hasItems = !categories.isEmpty
+        let hasItems = !viewModel.categories.isEmpty
         categoryDizzyStackView.isHidden = hasItems
         tableView.isHidden = !hasItems
     }
     
-    private func loadCategoriesFromStore() {
-        categories = store.allTitleCategories()
-    }
-    
-    private func initialCheckmark(){
-        if let initial = initialSelectedCategory,
-           let idx = categories.firstIndex(of: initial) {
-            selectedIndex = idx
+    private func bindViewModel() {
+        viewModel.onCategoriesChanged = { [weak self] in
+            guard let self = self else { return }
+            self.tableView.reloadData()
+            self.updatePlaceholderVisibility()
         }
     }
     
@@ -146,16 +134,15 @@ final class CategoriesViewController: BaseController {
 //MARK: - UITableViewDataSource
 extension CategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return viewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoriesCell.reuseIdentifier, for: indexPath) as? CategoriesCell else {
             return UITableViewCell()
         }
-        cell.categoryName = categories[indexPath.row]
-        let show = (indexPath.row == selectedIndex)
-        cell.configureCell(showCheckmark: show)
+        let viewModel = viewModel.categories[indexPath.row]
+        cell.configureCell(with: viewModel)
         return cell
     }
 }
@@ -166,17 +153,9 @@ extension CategoriesViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        selectedIndex = indexPath.row
-        let title = categories[indexPath.row]
-        let isHidden = false
-        delegate?.categoriesViewController(self, didSelectCategory: title, isImageHidden: isHidden)
+        viewModel.selectCategory(at: indexPath.row)
+        let selectedViewModel = viewModel.categories[indexPath.row]
+        delegate?.categoriesViewController(self, didSelectCategory: selectedViewModel.title, isImageHidden: false)
         dismiss(animated: true)
-    }
-}
-
-extension CategoriesViewController: TrackerCategoryStoreDelegate {
-    func store(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdate) {
-        DispatchQueue.main.async { self.loadCategoriesFromStore() }
     }
 }

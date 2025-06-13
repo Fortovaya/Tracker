@@ -10,13 +10,7 @@ import UIKit
 final class CategoriesCell: UITableViewCell {
     // MARK: - Static variables
     static let reuseIdentifier = Identifier.CategoriesTableView.categoriesCell.text
-    
-    var categoryName: String = "" {
-        didSet {
-            categoryNameLabel.text = categoryName
-        }
-    }
-    
+        
     // MARK: - Private variables
     private lazy var categoryNameLabel: UILabel = {
         let label = UILabel()
@@ -26,7 +20,7 @@ final class CategoriesCell: UITableViewCell {
         return label
     }()
     
-    private lazy var cellImage: UIImageView = {
+    private lazy var checkmarkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
         imageView.backgroundColor = .clear
@@ -38,7 +32,7 @@ final class CategoriesCell: UITableViewCell {
     }()
     
     private lazy var cellStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [categoryNameLabel, cellImage])
+        let stack = UIStackView(arrangedSubviews: [categoryNameLabel, checkmarkImageView])
         stack.axis = .horizontal
         stack.spacing = .zero
         stack.alignment = .fill
@@ -54,7 +48,7 @@ final class CategoriesCell: UITableViewCell {
     
     override func prepareForReuse(){
         super.prepareForReuse()
-        cellImage.isHidden = true
+        checkmarkImageView.isHidden = true
         categoryNameLabel.text = nil
     }
     
@@ -72,14 +66,15 @@ final class CategoriesCell: UITableViewCell {
         return nil
     }
     
+    //MARK: - Private Methods
     private func setupCell(){
         contentView.clipsToBounds = true
         contentView.addSubview(cellStackView)
         [cellStackView].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            cellImage.widthAnchor.constraint(equalToConstant: 24),
-            cellImage.heightAnchor.constraint(equalToConstant: 24),
+            checkmarkImageView.widthAnchor.constraint(equalToConstant: 24),
+            checkmarkImageView.heightAnchor.constraint(equalToConstant: 24),
             
             cellStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             cellStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -88,8 +83,8 @@ final class CategoriesCell: UITableViewCell {
         contentView.backgroundColor = .ypBackgroundTF
     }
     
-    func configureCell(showCheckmark: Bool){
-        cellImage.isHidden = !showCheckmark
-        categoryNameLabel.text = categoryName
+    func configureCell(with vm: CategoryCellViewModel){
+        categoryNameLabel.text = vm.title
+        checkmarkImageView.isHidden = !vm.isSelected
     }
 }

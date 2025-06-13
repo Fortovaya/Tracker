@@ -8,7 +8,7 @@
 import UIKit
 
 final class AddNewCategoryCell: UITableViewCell {
-
+    //MARK: - Public variables
     var onTextChange: ((String) -> Void)?
     
     // MARK: - Static variables
