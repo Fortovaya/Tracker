@@ -7,7 +7,20 @@
 import UIKit
 
 final class CategoriesViewController: BaseController {
-    
+    //MARK: - Enum
+    private enum Constants {
+        static let buttonHorizontalInset: CGFloat = 20
+        static let buttonBottomOffset: CGFloat = 16
+        static let tableTopInset: CGFloat = 24
+        static let tableBottomOffset: CGFloat = 114
+        static let stackTopInset: CGFloat = 232
+        static let horizontalPadding: CGFloat = 16
+        static let dizzyImageSize: CGFloat = 80
+        static let heightForRowAt: CGFloat = 75
+        static let tableCornerRadius: CGFloat = 16
+        static let labelNumberOfLines: Int = 2
+        static let stackSpacing: CGFloat = 8
+    }
     //MARK: - Delegate
     weak var delegate: CategoriesVCDelegate?
     
@@ -35,11 +48,11 @@ final class CategoriesViewController: BaseController {
         tableView.isOpaque = true
         tableView.clearsContextBeforeDrawing = true
         tableView.clipsToBounds = true
-        tableView.layer.cornerRadius = 16
+        tableView.layer.cornerRadius = Constants.tableCornerRadius
         tableView.separatorColor = .ypGray
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = UIEdgeInsets(
-            top: 0, left: 16, bottom: 0, right: 16)
+            top: 0, left: Constants.horizontalPadding, bottom: 0, right: Constants.horizontalPadding)
         tableView.isEditing = false
         tableView.allowsSelection = true
         tableView.backgroundColor = .clear
@@ -61,7 +74,7 @@ final class CategoriesViewController: BaseController {
         let label = UILabel()
         label.text = Resources.Labels.categoryDizzyLabel.text
         label.textColor = .ypBlack
-        label.numberOfLines = 2
+        label.numberOfLines = Constants.labelNumberOfLines
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 12, weight: .medium)
         return label
@@ -70,7 +83,7 @@ final class CategoriesViewController: BaseController {
     private lazy var categoryDizzyStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [categoryDizzyImage, categoryDizzyLabel])
         stack.axis = .vertical
-        stack.spacing = 8
+        stack.spacing = Constants.stackSpacing
         stack.alignment = .center
         stack.isHidden = false
         return stack
@@ -91,21 +104,27 @@ final class CategoriesViewController: BaseController {
         [addNewCategoriesButton, tableView, categoryDizzyStackView].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            addNewCategoriesButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            addNewCategoriesButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            addNewCategoriesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            addNewCategoriesButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                            constant: Constants.buttonHorizontalInset),
+            addNewCategoriesButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                             constant: -Constants.buttonHorizontalInset),
+            addNewCategoriesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                                           constant: -Constants.buttonBottomOffset),
             
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            tableView.bottomAnchor.constraint(equalTo: addNewCategoriesButton.topAnchor, constant: -114),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.tableTopInset),
+            tableView.bottomAnchor.constraint(equalTo: addNewCategoriesButton.topAnchor, constant: -Constants.tableBottomOffset),
             
-            categoryDizzyImage.widthAnchor.constraint(equalToConstant: 80),
-            categoryDizzyImage.heightAnchor.constraint(equalToConstant: 80),
+            categoryDizzyImage.widthAnchor.constraint(equalToConstant: Constants.dizzyImageSize),
+            categoryDizzyImage.heightAnchor.constraint(equalToConstant: Constants.dizzyImageSize),
             
-            categoryDizzyStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 232),
-            categoryDizzyStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            categoryDizzyStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            categoryDizzyStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,
+                                                        constant: Constants.stackTopInset),
+            categoryDizzyStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                            constant: Constants.horizontalPadding),
+            categoryDizzyStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                             constant: -Constants.horizontalPadding),
             
         ])
     }
@@ -149,9 +168,9 @@ extension CategoriesViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension CategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        75
+        Constants.heightForRowAt
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.selectCategory(at: indexPath.row)
         let selectedViewModel = viewModel.categories[indexPath.row]

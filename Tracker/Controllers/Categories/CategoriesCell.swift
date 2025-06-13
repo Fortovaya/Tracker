@@ -8,6 +8,11 @@
 import UIKit
 
 final class CategoriesCell: UITableViewCell {
+    //MARK: - Enum
+    private enum Constants {
+        static let horizontalPadding: CGFloat = 16
+        static let checkmarkSize: CGFloat = 24
+    }
     // MARK: - Static variables
     static let reuseIdentifier = Identifier.CategoriesTableView.categoriesCell.text
         
@@ -73,12 +78,12 @@ final class CategoriesCell: UITableViewCell {
         [cellStackView].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            checkmarkImageView.widthAnchor.constraint(equalToConstant: 24),
-            checkmarkImageView.heightAnchor.constraint(equalToConstant: 24),
+            checkmarkImageView.widthAnchor.constraint(equalToConstant: Constants.checkmarkSize),
+            checkmarkImageView.heightAnchor.constraint(equalToConstant: Constants.checkmarkSize),
             
             cellStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            cellStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            cellStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+            cellStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
+            cellStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding)
         ])
         contentView.backgroundColor = .ypBackgroundTF
     }

@@ -8,7 +8,16 @@
 import UIKit
 
 final class AddNewCategoriesViewController: BaseController {
-    
+    //MARK: - Enum
+    private enum Constants {
+        static let buttonHorizontalInset: CGFloat = 20
+        static let buttonBottomOffset: CGFloat = 16
+        static let tableViewTopOffset: CGFloat = 24
+        static let tableViewBottomOffset: CGFloat = 400
+        static let numberOfRows = 1
+        static let cellHeight: CGFloat = 75
+    }
+
     //MARK: - Private variables
     private lazy var saveCategoriesButton = BaseButton(title: .done,
                                                        backgroundColor: .ypGray,
@@ -53,14 +62,19 @@ final class AddNewCategoriesViewController: BaseController {
         [saveCategoriesButton, tableView].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            saveCategoriesButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            saveCategoriesButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            saveCategoriesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            saveCategoriesButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                          constant: Constants.buttonHorizontalInset),
+            saveCategoriesButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                           constant: -Constants.buttonHorizontalInset),
+            saveCategoriesButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                                         constant: -Constants.buttonBottomOffset),
             
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,
+                                           constant: Constants.tableViewTopOffset),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: saveCategoriesButton.topAnchor, constant: -400)
+            tableView.bottomAnchor.constraint(equalTo: saveCategoriesButton.topAnchor,
+                                              constant: -Constants.tableViewBottomOffset)
         ])
         saveCategoriesButton.isEnabled = false
     }
@@ -85,7 +99,7 @@ final class AddNewCategoriesViewController: BaseController {
 //MARK: - UITableViewDataSource
 extension AddNewCategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return Constants.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -102,6 +116,6 @@ extension AddNewCategoriesViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension AddNewCategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
+        return Constants.cellHeight
     }
 }

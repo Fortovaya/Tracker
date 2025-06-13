@@ -8,6 +8,11 @@
 import UIKit
 
 final class AddNewCategoryCell: UITableViewCell {
+    //MARK: - Enum
+    private enum Constants {
+        static let horizontalPadding: CGFloat = 16
+        static let textFieldHeight: CGFloat = 75
+    }
     //MARK: - Public variables
     var onTextChange: ((String) -> Void)?
     
@@ -57,12 +62,12 @@ final class AddNewCategoryCell: UITableViewCell {
         [textField].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
+            textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
             textField.topAnchor.constraint(equalTo: contentView.topAnchor),
             textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            textField.heightAnchor.constraint(equalToConstant: 75)
+            textField.heightAnchor.constraint(equalToConstant: Constants.textFieldHeight)
         ])
         
         contentView.backgroundColor = .ypBackgroundTF
