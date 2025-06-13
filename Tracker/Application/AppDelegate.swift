@@ -32,7 +32,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         container.loadPersistentStores { description, error in
             if let error = error as NSError? {
-                fatalError("Не удалось загрузить Core Data store: \(error), \(error.userInfo)")
+                assertionFailure("Не удалось загрузить Core Data store: \(error), \(error.userInfo)")
             }
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
@@ -41,7 +41,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     static var viewContext: NSManagedObjectContext {
         guard let delegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("❌ Не удалось получить AppDelegate для Core Data")
+            assertionFailure("❌ Не удалось получить AppDelegate для Core Data")
+            let container = NSPersistentContainer(name: "TrackerModel")
+            return container.viewContext
         }
         return delegate.persistentContainer.viewContext
     }
@@ -55,7 +57,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             try context.save()
         } catch {
             let nserror = error as NSError
-            fatalError("Ошибка сохранения контекста: \(nserror), \(nserror.userInfo)")
+            assertionFailure("Ошибка сохранения контекста: \(nserror), \(nserror.userInfo)")
         }
     }
 }

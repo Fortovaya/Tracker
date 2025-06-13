@@ -73,7 +73,7 @@ final class TrackerCategoryStore: NSObject {
         do {
             try controller.performFetch()
         } catch {
-            print("❌ Не удалось выполнить fetch для TrackerCategoryCoreData: \(error)")
+            assertionFailure("❌ Не удалось выполнить fetch для TrackerCategoryCoreData: \(error)")
         }
     }
     
