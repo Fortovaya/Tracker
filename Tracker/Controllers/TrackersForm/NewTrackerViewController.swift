@@ -205,7 +205,7 @@ final class NewTrackerViewController: BaseController {
     @objc private func tapCategoryButton(){
         let categoriesVC = CategoriesViewController()
         categoriesVC.delegate = self
-        categoriesVC.isImageInitiallyHidden = isCategoryImageHidden
+        categoriesVC.initialSelectedCategory = selectedCategory
         presentPageSheet(viewController: categoriesVC)
     }
     

@@ -214,7 +214,8 @@ final class TrackerViewController: BaseController {
     
     private func loadCategories() {
         let fetched = categoryStore.fetchedCategories
-        categories = fetched
+        let nonEmpty = fetched.filter { !$0.trackers.isEmpty }
+        categories = nonEmpty
         refreshUI()
         let weekday = WeekDay.orderedWeekday(date: currentDate)
         filtersTrackers(for: weekday)

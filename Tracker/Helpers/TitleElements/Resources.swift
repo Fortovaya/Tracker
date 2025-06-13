@@ -33,7 +33,7 @@ enum Resources {
         case habit = "Привычка"
         case category = "Категория"
         case schedule = "Расписание"
-        case onBoarding = "Вот это технологии"
+        case onBoarding = "Вот это технологии!"
         
         var text: String { rawValue }
     }
@@ -64,6 +64,11 @@ enum Resources {
     enum Labels: String {
         case dizzyLabel = "Что будем отслеживать?"
         case searchPlaceholder = "Поиск"
+        case categoryDizzyLabel =
+        """
+        Привычки и события можно
+        объединить по смыслу
+        """
         
         var text: String { rawValue }
     }

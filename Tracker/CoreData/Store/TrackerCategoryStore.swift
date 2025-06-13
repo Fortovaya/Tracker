@@ -20,6 +20,10 @@ final class TrackerCategoryStore: NSObject {
         return objects.compactMap { try? decodeTrackerCategory(from: $0)}
     }
     
+    var fetchedCategoryTitles: [String] {
+        return fetchedCategories.map { $0.title }
+    }
+    
     //MARK: - Private variables:
     private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>?
     private var insertedIndexes: IndexSet?
@@ -83,6 +87,26 @@ final class TrackerCategoryStore: NSObject {
                                        trackerCoreData: TrackerCoreData) {
         trackerCategoryCoreData.title = category.title
         trackerCategoryCoreData.addToTrackers(trackerCoreData)
+    }
+    
+    func createCategory(title: String) throws {
+        let coreData = TrackerCategoryCoreData(context: context)
+        coreData.title = title
+        try context.save()
+    }
+    
+    func deleteCategory(withTitle title: String) throws {
+        let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "title == %@", title)
+        let results = try context.fetch(request)
+        for obj in results {
+            context.delete(obj)
+        }
+        try context.save()
+    }
+    
+    func allTitleCategories() -> [String] {
+        return fetchedCategoryTitles
     }
     
     private func decodeTrackerCategory(from trackerCategoryCoreData: TrackerCategoryCoreData) throws -> TrackerCategory {
