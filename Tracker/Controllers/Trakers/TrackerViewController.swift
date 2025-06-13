@@ -226,7 +226,6 @@ final class TrackerViewController: BaseController {
         let today = Calendar.current.startOfDay(for: Date())
         
         guard picked <= today else {
-            print("⚠️ Нельзя отметить трекер для будущей даты: \(date)")
             return
         }
         
@@ -235,14 +234,12 @@ final class TrackerViewController: BaseController {
             
             if let recordCD = recordStore.fetchRecordCoreData(trackerId: trackerId, on: picked) {
                 try recordStore.deleteRecord(recordCD)
-                print("❌ Удалили запись выполнения")
             } else {
                 let record = TrackerRecord(id: UUID(), trackerId: trackerId, date: picked)
                 try recordStore.addNewTrackerRecordCoreData(record, for: trackerCD)
-                print("✅ Добавили запись выполнения")
             }
         } catch {
-            print("❌ Ошибка при обновлении отметки: \(error)")
+            assertionFailure("❌ Ошибка при обновлении отметки: \(error)")
         }
     }
     
@@ -304,11 +301,9 @@ final class TrackerViewController: BaseController {
             self.dateButton.setTitle(title, for: .normal)
             
             let weekDay = WeekDay.orderedWeekday(date: selectedDate)
-            print("✅ День недели выбранной даты: \(weekDay)")
             
             self.updateFooters(for: selectedDate)
             self.filtersTrackers(for: weekDay)
-            print(" Выбрана дата: \(title)")
         }
         present(calendarVC, animated: true)
     }
