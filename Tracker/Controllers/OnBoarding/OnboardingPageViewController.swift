@@ -10,6 +10,8 @@ import UIKit
 final class OnboardingPageViewController: UIViewController {
     //MARK: Enum
     private enum Constants {
+        static let horizontalInset: CGFloat = 20
+        static let bottomOffSafeArea: CGFloat = 50
         static let horizontalPadding: CGFloat = 16
         static let bottomOffset: CGFloat = 270
     }
@@ -34,6 +36,11 @@ final class OnboardingPageViewController: UIViewController {
         labelBoarding.translatesAutoresizingMaskIntoConstraints = false
         return labelBoarding
     }()
+    
+    private lazy var boardingButton = BaseButton(title: .onBoarding,
+                                                 target: self,
+                                                 action: #selector(didTapBoardingButton))
+    
     // MARK: - Init
     init(page: OnboardingPage) {
         self.page = page
@@ -53,8 +60,8 @@ final class OnboardingPageViewController: UIViewController {
     }
     //MARK: - Private Methods
     private func configurationOnBoardingPageController(){
-        view.addSubviews([imageBoarding, labelBoarding])
-        [imageBoarding, labelBoarding].disableAutoresizingMask()
+        view.addSubviews([imageBoarding, labelBoarding, boardingButton])
+        [imageBoarding, labelBoarding, boardingButton].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
             imageBoarding.topAnchor.constraint(equalTo: view.topAnchor),
@@ -68,8 +75,29 @@ final class OnboardingPageViewController: UIViewController {
                                                    constant: Constants.horizontalPadding),
             labelBoarding.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                                                   constant: -Constants.bottomOffset),
+            
+            boardingButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                    constant: Constants.horizontalInset),
+            boardingButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                     constant: -Constants.horizontalInset),
+            boardingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                                   constant: -Constants.bottomOffSafeArea)
         ])
         
         view.backgroundColor = .ypWhite
+    }
+    
+    //MARK: - Private Action
+    @objc private func didTapBoardingButton(){
+        OnBoardingStorage.isOnboardingCompleted = true
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+              let window = windowScene.windows.first
+        else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        let mainTabBarController = MainTabBarController()
+        window.rootViewController = mainTabBarController
     }
 }

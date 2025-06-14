@@ -10,9 +10,7 @@ import UIKit
 final class OnboardingViewController: UIPageViewController {
     //MARK: Enum
     private enum Constants {
-        static let horizontalInset: CGFloat = 20
-        static let bottomOffset: CGFloat = 50
-        static let stackSpacing: CGFloat = 24
+        static let bottomOffset: CGFloat = 134
     }
     
     private enum OnboardingStep: Int, CaseIterable {
@@ -50,10 +48,6 @@ final class OnboardingViewController: UIPageViewController {
         OnboardingPageViewController(page: step.page)
     }
     
-    private lazy var boardingButton = BaseButton(title: .onBoarding,
-                                                 target: self,
-                                                 action: #selector(didTapBoardingButton))
-    
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = pages.count
@@ -62,15 +56,6 @@ final class OnboardingViewController: UIPageViewController {
         pageControl.pageIndicatorTintColor = UIColor.ypBlack.withAlphaComponent(0.3)
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         return pageControl
-    }()
-    
-    private lazy var bottomStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [pageControl,boardingButton])
-        stack.axis = .vertical
-        stack.spacing = Constants.stackSpacing
-        stack.alignment = .center
-        stack.distribution = .fill
-        return stack
     }()
     
     //MARK: - Life Cycle
@@ -91,36 +76,16 @@ final class OnboardingViewController: UIPageViewController {
     }
     
     private func configurationOnBoardingViewController(){
-        view.addSubviews([bottomStackView])
-        [bottomStackView, boardingButton].disableAutoresizingMask()
+        view.addSubview(pageControl)
+        [pageControl].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            bottomStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                      constant: -Constants.horizontalInset),
-            bottomStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                                     constant: Constants.horizontalInset),
-            bottomStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                                    constant: -Constants.bottomOffset),
-            
-            boardingButton.widthAnchor.constraint(equalTo: bottomStackView.widthAnchor)
-            
+            pageControl.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                                constant: -Constants.bottomOffset)
         ])
         
         pageControl.addTarget(self, action: #selector(pageControlTapped(_:)), for: .valueChanged)
-    }
-    
-    //MARK: - Private Action
-    @objc private func didTapBoardingButton(){
-        OnBoardingStorage.isOnboardingCompleted = true
-        guard let windowScene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
-              let window = windowScene.windows.first
-        else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        let mainTabBarController = MainTabBarController ()
-        window.rootViewController = mainTabBarController
     }
     
     @objc private func pageControlTapped(_ sender: UIPageControl) {
@@ -144,7 +109,8 @@ final class OnboardingViewController: UIPageViewController {
 //MARK: - UIPageViewControllerDataSource
 extension OnboardingViewController: UIPageViewControllerDataSource {
     
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+    func pageViewController(_ pageViewController: UIPageViewController,
+                            viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard
             let viewControllerIndex = viewController as? OnboardingPageViewController,
             let index = pages.firstIndex(of: viewControllerIndex),
