@@ -16,4 +16,11 @@ enum Identifier {
         
         var text: String { rawValue }
     }
+    
+    enum CategoriesTableView: String {
+        case categoriesCell = "CategoriesCell"
+        case addNewCategoryCell = "AddNewCategoryCell"
+        
+        var text: String { rawValue }
+    }
 }

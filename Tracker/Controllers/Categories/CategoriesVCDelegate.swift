@@ -1,5 +1,5 @@
 //
-//  CategoriesViewControllerDelegate.swift
+//  CategoriesVCDelegate.swift
 //  Tracker
 //
 //  Created by Алина on 11.05.2025.

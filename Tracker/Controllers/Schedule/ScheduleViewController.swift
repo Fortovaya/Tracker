@@ -138,8 +138,6 @@ final class ScheduleViewController: BaseController {
         } else {
             selectedDays.remove(day)
         }
-        
-        print("Выбранные дни: \(selectedDays)")
     }
     
     @objc private func didTapDoneButton(){
