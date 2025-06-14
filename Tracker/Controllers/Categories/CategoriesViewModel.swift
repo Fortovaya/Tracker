@@ -5,7 +5,7 @@
 //  Created by Алина on 13.06.2025.
 //
 
-import UIKit
+import Foundation
 
 final class CategoriesViewModel {
     
