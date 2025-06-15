@@ -68,7 +68,7 @@ final class TrackerCollectionServices: NSObject {
     
     private func addEmoji(named rawName: String) {
         guard let emoji = Resources.EmojiImage(rawValue: rawName) else {
-            print("❌ Эмодзи «\(rawName)» не найдено в Resources.EmojiImage")
+            assertionFailure ("❌ Эмодзи «\(rawName)» не найдено в Resources.EmojiImage")
             return
         }
         emojis.append(emoji)

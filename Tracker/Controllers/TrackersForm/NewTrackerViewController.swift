@@ -98,7 +98,10 @@ final class NewTrackerViewController: BaseController {
         super.init(nibName: nil, bundle: nil)
     }
     
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) {
+        assertionFailure("init(coder:) has not been implemented")
+        return nil
+    }
     
     // MARK: - Life Cycle
     override func viewDidLoad() {
@@ -195,9 +198,8 @@ final class NewTrackerViewController: BaseController {
         do {
             try store.addNewTracker(tracker, categoryTitle: category)
             delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
-            print("✅ Делегат получил трекер с id = \(tracker.idTrackers)")
         } catch {
-            print("❌ Ошибка сохранения трекера: \(error)")
+            assertionFailure("❌ Ошибка сохранения трекера: \(error)")
         }
     }
     
@@ -205,7 +207,7 @@ final class NewTrackerViewController: BaseController {
     @objc private func tapCategoryButton(){
         let categoriesVC = CategoriesViewController()
         categoriesVC.delegate = self
-        categoriesVC.isImageInitiallyHidden = isCategoryImageHidden
+        categoriesVC.initialSelectedCategory = selectedCategory
         presentPageSheet(viewController: categoriesVC)
     }
     
