@@ -367,10 +367,8 @@ extension TrackerViewController: TrackerCellDelegate {
     }
 
     func dayString(for count: Int) -> String {
-        let lastDigit = count % 10, lastTwoDigits = count % 100
-        if lastDigit == 1 && lastTwoDigits != 11 { return "день" }
-        if (2...4).contains(lastDigit) && !(12...14).contains(lastTwoDigits) { return "дня" }
-        return "дней"
+        let format = NSLocalizedString("days.count", comment: "Pluralized word for days")
+        return String.localizedStringWithFormat(format, count)
     }
 }
 

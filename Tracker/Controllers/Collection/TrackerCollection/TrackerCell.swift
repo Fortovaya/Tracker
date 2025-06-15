@@ -212,13 +212,11 @@ final class TrackerCell: UICollectionViewCell {
         trackerId = idTrackers
         
         let total = delegate?.completedDaysCount(for: idTrackers) ?? 0
-        daysLabel.text = "\(total) \(delegate?.dayString(for: total) ?? "дней")"
+        daysLabel.text = "\(total) \(delegate?.dayString(for: total) ?? "")"
         let isDoneToday = delegate?.isTrackerCompleted(for: idTrackers, on: date) ?? false
         plusButton.isSelected = isDoneToday
         updatePlusButtonAlpha()
     }
-    
-    
     
     //MARK: - Action
     @objc private func didTapPlusButton(){

@@ -4,6 +4,8 @@
 //
 //  Created by Алина on 04.05.2025.
 //
+import Foundation
+
 enum TextFieldPlaceholder {
     case trackerName
     case categoryName
@@ -14,13 +16,13 @@ enum TextFieldPlaceholder {
     var text: String {
         switch self {
             case .trackerName:
-                return "Введите название трекера"
+                return NSLocalizedString("placeholder.trackerName", comment: "")
             case .categoryName:
-                return "Введите название категории"
+                return NSLocalizedString("placeholder.categoryName", comment: "")
             case .schedule:
-                return "Введите расписание"
+                return NSLocalizedString("placeholder.schedule", comment: "")
             case .search:
-                return "Поиск"
+                return NSLocalizedString("placeholder.search", comment: "")
             case .custom(let str):
                 return str
         }

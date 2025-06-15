@@ -1,0 +1,72 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Алина on 15.06.2025.
+  
+*/
+
+/* TextField placeholders */
+"placeholder.trackerName" = "Введите название трекера";
+"placeholder.categoryName" = "Введите название категории";
+"placeholder.schedule" = "Введите расписание";
+"placeholder.search" = "Поиск";
+
+/* Screen Titles */
+"screen.createTracker" = "Создание трекера";
+"screen.newHabit" = "Новая привычка";
+"screen.createHabit" = "Создание привычки";
+"screen.editHabit" = "Редактирование привычки";
+"screen.category" = "Категория";
+"screen.newCategory" = "Новая категория";
+"screen.editCategory" = "Редактирование категории";
+"screen.schedule" = "Расписание";
+"screen.filters" = "Фильтры";
+"screen.tracker" = "Трекеры";
+"screen.newEvents" = "Новое нерегулярное событие";
+
+/* Button Titles */
+"button.addCategory" = "Добавить категорию";
+"button.create" = "Создать";
+"button.done" = "Готово";
+"button.cancel" = "Отменить";
+"button.filters" = "Фильтры";
+"button.irregularEvent" = "Нерегулярное событие";
+"button.habit" = "Привычка";
+"button.category" = "Категория";
+"button.schedule" = "Расписание";
+"button.onBoarding" = "Вот это технологии!";
+
+/* Collection Titles*/
+"title.emoji" = "Emoji";
+"title.color" = "Цвет";
+
+/* Tab Bar */
+"tab.trackers" = "Трекеры";
+"tab.statistics" = "Статистика";
+
+/* Labels */
+"label.emptyState" = "Что будем отслеживать?";
+"label.searchPlaceholder" = "Поиск";
+"label.categoryDizzyLabel" = "Привычки и события можно\nобъединить по смыслу";
+
+/*Boarding Labels*/
+"label.onBoardingBlue" = "Отслеживайте только то, что хотите";
+"label.onBoardingRed" = "Даже если это не литры воды и йога";
+
+/* Weekday */
+"weekday.monday" = "Понедельник";
+"weekday.tuesday" = "Вторник";
+"weekday.wednesday" = "Среда";
+"weekday.thursday" = "Четверг";
+"weekday.friday" = "Пятница";
+"weekday.saturday" = "Суббота";
+"weekday.sunday" = "Воскресенье";
+
+"weekday.short.monday" = "Пн";
+"weekday.short.tuesday" = "Вт";
+"weekday.short.wednesday" = "Ср";
+"weekday.short.thursday" = "Чт";
+"weekday.short.friday" = "Пт";
+"weekday.short.saturday" = "Сб";
+"weekday.short.sunday" = "Вс";
