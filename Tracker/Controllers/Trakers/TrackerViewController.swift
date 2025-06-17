@@ -5,6 +5,7 @@
 //  Created by Алина on 20.04.2025.
 //
 import UIKit
+import YandexMobileMetrica
 
 final class TrackerViewController: BaseController {
     
@@ -283,6 +284,7 @@ final class TrackerViewController: BaseController {
     
     // MARK: - Action
     @objc private func tapAddTrackerButton() {
+        YMMYandexMetrica.reportEvent("main_add_tracker_tapped")
         let typeVC = TrackerTypeViewController()
         typeVC.habitDelegate = self
         presentPageSheet(viewController: typeVC)
@@ -295,6 +297,9 @@ final class TrackerViewController: BaseController {
         
         calendarVC.onDatePicked = { [weak self] selectedDate in
             guard let self = self else { return }
+            
+            let formattedDate = DateFormatter.dateFormatter.string(from: selectedDate)
+            YMMYandexMetrica.reportEvent("main_date_selected", parameters: ["date": formattedDate])
             
             self.currentDate = selectedDate
             let title = DateFormatter.dateFormatter.string(from: selectedDate)
@@ -311,7 +316,8 @@ final class TrackerViewController: BaseController {
 
 extension TrackerViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        // TO DO:
+        guard let text = searchController.searchBar.text, !text.isEmpty else { return }
+        YMMYandexMetrica.reportEvent("main_search_input", parameters: ["query": text])
     }
 }
 
