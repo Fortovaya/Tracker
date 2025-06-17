@@ -60,7 +60,7 @@ final class TrackerViewController: BaseController {
     private lazy var dateButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(DateFormatter.dateFormatter.string(from: Date()), for: .normal)
-        button.setTitleColor(.ypBlack, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         button.backgroundColor = .ypDatePicker
         button.layer.cornerRadius = 8

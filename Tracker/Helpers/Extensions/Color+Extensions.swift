@@ -40,24 +40,28 @@ extension UIColor {
     
     static var trackerCellColors: [UIColor] {
         return [
-            .ypCellColorRed,
-            .ypCellColorOrange,
-            .ypCellColorBlue,
-            .ypCellColorPurple,
-            .ypCellColorGreen,
-            .ypCellColorPink,
-            .ypCellColorLightPink,
-            .ypCellColorLightBlue,
-            .ypCellColorMint,
-            .ypCellColorDarkBlue,
-            .ypCellColorCoral,
-            .ypCellColorBabyPink,
-            .ypCellColorPeach,
-            .ypCellColorPeriwinkle,
-            .ypCellColorViolet,
-            .ypCellColorLavender,
-            .ypCellColorLightPurple,
-            .ypCellColorLime
+            .ypCellColorRed,.ypCellColorOrange,.ypCellColorBlue,
+            .ypCellColorPurple,.ypCellColorGreen,.ypCellColorPink,
+            .ypCellColorLightPink,.ypCellColorLightBlue,.ypCellColorMint,
+            .ypCellColorDarkBlue,.ypCellColorCoral,.ypCellColorBabyPink,
+            .ypCellColorPeach,.ypCellColorPeriwinkle,.ypCellColorViolet,
+            .ypCellColorLavender,.ypCellColorLightPurple,.ypCellColorLime
         ]
+    }
+    
+    static func ypBlackForTheme(for traitCollection: UITraitCollection) -> UIColor {
+        if traitCollection.userInterfaceStyle == .dark {
+            return UIColor(named: "ypBlack", in: nil, compatibleWith: traitCollection) ?? .black
+        } else {
+            return UIColor(named: "ypWhite", in: nil, compatibleWith: traitCollection) ?? .white
+        }
+    }
+    
+    static func ypWhiteForTheme(for traitCollection: UITraitCollection) -> UIColor {
+        if traitCollection.userInterfaceStyle == .dark {
+            return UIColor(named: "ypWhite", in: nil, compatibleWith: traitCollection) ?? .white
+        } else {
+            return UIColor(named: "ypBlack", in: nil, compatibleWith: traitCollection) ?? .black
+        }
     }
 }

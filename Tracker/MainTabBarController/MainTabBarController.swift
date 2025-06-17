@@ -39,7 +39,7 @@ final class MainTabBarController: UITabBarController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        overrideUserInterfaceStyle = .light
+//        overrideUserInterfaceStyle = .light
         viewControllers = [
             makeTab(for: .trackers),
             makeTab(for: .statistics)
