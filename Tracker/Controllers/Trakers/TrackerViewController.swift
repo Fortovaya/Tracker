@@ -126,7 +126,6 @@ final class TrackerViewController: BaseController {
         setupHelper()
         configureConstraintsTrackerViewController()
         updatePlaceholderVisibility()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -135,7 +134,6 @@ final class TrackerViewController: BaseController {
         updateCompletedTrackers()
     }
 
-    
     //MARK: Private method
     private func configureConstraintsTrackerViewController() {
         view.addSubview(dizzyStackView)
@@ -217,7 +215,6 @@ final class TrackerViewController: BaseController {
         let fetched = categoryStore.fetchedCategories
         let nonEmpty = fetched.filter { !$0.trackers.isEmpty }
         categories = nonEmpty
-        refreshUI()
         let weekday = WeekDay.orderedWeekday(date: currentDate)
         filtersTrackers(for: weekday)
     }
@@ -280,6 +277,9 @@ final class TrackerViewController: BaseController {
     private func updateCompletedTrackers() {
         completedTrackers = recordStore.fetchedRecords
         updateFooters(for: currentDate)
+        
+        let weekDay = WeekDay.orderedWeekday(date: currentDate)
+        filtersTrackers(for: weekDay)
     }
     
     // MARK: - Action
