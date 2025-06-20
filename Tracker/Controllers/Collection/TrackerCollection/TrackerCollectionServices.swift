@@ -146,6 +146,7 @@ extension TrackerCollectionServices: UICollectionViewDataSource {
             text: tracker.nameTrackers,
             color: tracker.colorTrackers,
             idTrackers: tracker.idTrackers,
+            isPinned: tracker.isPinned,
             for: date
         )
         return cell

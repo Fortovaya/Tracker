@@ -211,12 +211,42 @@ final class TrackerViewController: BaseController {
         refreshUI()
     }
     
+//    private func loadCategories() {
+//        let fetched = categoryStore.fetchedCategories
+//        let nonEmpty = fetched.filter { !$0.trackers.isEmpty }
+//        categories = nonEmpty
+//        let weekday = WeekDay.orderedWeekday(date: currentDate)
+//        filtersTrackers(for: weekday)
+//    }
+    
     private func loadCategories() {
-        let fetched = categoryStore.fetchedCategories
-        let nonEmpty = fetched.filter { !$0.trackers.isEmpty }
-        categories = nonEmpty
         let weekday = WeekDay.orderedWeekday(date: currentDate)
-        filtersTrackers(for: weekday)
+        let all     = store.trackers.filter { $0.scheduleTrackers.contains(weekday) }
+        let pinned  = all.filter(\.isPinned)
+        let normal  = all.filter { !$0.isPinned }
+        
+        var result: [TrackerCategory] = []
+        
+        if !pinned.isEmpty {
+            result.append(.init(title: "Закреплённые", trackers: pinned))
+        }
+        
+        // Вместо группировки по DTO, пробегаем по существующим категориям:
+        let fetched = categoryStore.fetchedCategories
+            .filter { !$0.trackers.isEmpty }
+        for category in fetched {
+            let filtered = category.trackers
+                .filter { tracker in
+                    normal.contains(where: { $0.idTrackers == tracker.idTrackers })
+                }
+            if !filtered.isEmpty {
+                result.append(.init(title: category.title, trackers: filtered))
+            }
+        }
+        
+        categories = result
+        helper?.updateCategories(with: categories)
+        updatePlaceholderVisibility(using: categories)
     }
     
     private func toggleTrackerCompletion(for trackerId: UUID, on date: Date) {
@@ -349,7 +379,7 @@ extension TrackerViewController: TrackerCreationViewControllerDelegate {
 
 // MARK: TrackerCellDelegate
 extension TrackerViewController: TrackerCellDelegate {
-    
+
     func trackerCellDidTapPlus(_ cell: TrackerCell, id: UUID) {
         let today = currentDate
         toggleTrackerCompletion(for: id, on: today)
@@ -375,6 +405,23 @@ extension TrackerViewController: TrackerCellDelegate {
     func dayString(for count: Int) -> String {
         let format = NSLocalizedString("days.count", comment: "Pluralized word for days")
         return String.localizedStringWithFormat(format, count)
+    }
+    
+    func didTogglePin(trackerId: UUID) {
+        do {
+            try store.togglePin(trackerId: trackerId)
+            loadCategories()
+        } catch {
+            assertionFailure("Не удалось переключить pin: \(error)")
+        }
+    }
+    
+    func didRequestEdit(trackerId: UUID) {
+        //TO DO:
+    }
+    
+    func didRequestDelete(trackerId: UUID) {
+        //TO DO:
     }
 }
 

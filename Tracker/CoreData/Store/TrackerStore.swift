@@ -121,12 +121,21 @@ final class TrackerStore: NSObject {
             throw TrackerStoreError.decodingErrorInvalidScheduleTrackers
         }
         
+        let isPinned = trackerCoreData.isPinned
+        
         return Tracker(idTrackers: idTrackers,
                        nameTrackers: nameTrackers,
                        colorTrackers: uiColorMarshalling.color(from: colorTrackers),
                        emojiTrackers: emojiTrackers,
-                       scheduleTrackers: scheduleTrackers
+                       scheduleTrackers: scheduleTrackers,
+                       isPinned: isPinned
         )
+    }
+    
+    func togglePin(trackerId: UUID) throws {
+        guard let trackerCore = fetchTrackerCoreData(by: trackerId) else { return }
+        trackerCore.isPinned.toggle()
+        try context.save()
     }
     
     // MARK: - Private Methods
@@ -136,6 +145,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.colorTrackers = uiColorMarshalling.hexString(from: mix.colorTrackers)
         trackerCoreData.emojiTrackers = mix.emojiTrackers
         trackerCoreData.scheduleTrackers = mix.scheduleTrackers as NSSet
+        trackerCoreData.isPinned = mix.isPinned
     }
 }
 

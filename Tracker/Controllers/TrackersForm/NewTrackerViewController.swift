@@ -192,7 +192,8 @@ final class NewTrackerViewController: BaseController {
             nameTrackers: name,
             colorTrackers: color,
             emojiTrackers: emoji.rawValue,
-            scheduleTrackers: days
+            scheduleTrackers: days,
+            isPinned: false
         )
         
         do {
