@@ -44,8 +44,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C78B5BD42DFF2C43001B2AC1 /* TrackerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = TrackerTests;
 			sourceTree = "<group>";
 		};
@@ -115,7 +113,6 @@
 				4EBC104B5087980FB098542F /* Pods-Tracker.debug.xcconfig */,
 				7727892A1FCEE28BB4145D15 /* Pods-Tracker.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};

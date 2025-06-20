@@ -70,3 +70,10 @@
 "weekday.short.friday" = "Fri";
 "weekday.short.saturday" = "Sat";
 "weekday.short.sunday" = "Sun";
+
+/* Statistics screen titles */
+"titleStatistic.bestPeriod" = "Best Streak";
+"titleStatistic.bestDays" = "Perfect Days";
+"titleStatistic.endTrackers" = "Trackers Completed";
+"titleStatistic.averageValue" = "Average Value";
+"titleStatistic.placeholder" = "Nothing to analyze yet";

@@ -70,3 +70,10 @@
 "weekday.short.friday" = "Ven";
 "weekday.short.saturday" = "Sam";
 "weekday.short.sunday" = "Dim";
+
+/* Statistics screen titles */
+"titleStatistic.bestPeriod" = "Meilleure séquence";
+"titleStatistic.bestDays" = "Jours parfaits";
+"titleStatistic.endTrackers" = "Trackers terminés";
+"titleStatistic.averageValue" = "Valeur moyenne";
+"titleStatistic.placeholder" = "Rien à analyser pour le moment";

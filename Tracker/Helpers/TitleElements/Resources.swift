@@ -53,6 +53,7 @@ enum Resources {
     
     enum ImageNames: String {
         case dizzy = "dizzy"
+        case placeholderStatistik = "placeholderStatistik"
         
         var imageName: String { rawValue }
     }
@@ -116,6 +117,19 @@ enum Resources {
     enum OnBoardingLabel: String {
         case onBoardingBlue = "label.onBoardingBlue"
         case onBoardingRed = "label.onBoardingRed"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum TitleStatistic: String {
+        case bestPeriod = "titleStatistic.bestPeriod"
+        case bestDays = "titleStatistic.bestDays"
+        case endTrackers = "titleStatistic.endTrackers"
+        case averageValue = "titleStatistic.averageValue"
+        
+        case titlePlaceholder = "titleStatistic.placeholder"
         
         var text: String {
             NSLocalizedString(self.rawValue, comment: "")

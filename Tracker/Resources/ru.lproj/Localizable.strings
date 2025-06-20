@@ -70,3 +70,10 @@
 "weekday.short.friday" = "Пт";
 "weekday.short.saturday" = "Сб";
 "weekday.short.sunday" = "Вс";
+
+/* Statistics screen titles */
+"titleStatistic.bestPeriod" = "Лучший период";
+"titleStatistic.bestDays" = "Идеальные дни";
+"titleStatistic.endTrackers" = "Трекеров завершено";
+"titleStatistic.averageValue" = "Среднее значение";
+"titleStatistic.placeholder" = "Анализировать пока нечего";
