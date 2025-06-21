@@ -36,6 +36,7 @@
 "button.category" = "Категория";
 "button.schedule" = "Расписание";
 "button.onBoarding" = "Вот это технологии!";
+"button.save" = "Сохранить";
 
 /* Collection Titles*/
 "title.emoji" = "Emoji";
@@ -77,3 +78,8 @@
 "titleStatistic.endTrackers" = "Трекеров завершено";
 "titleStatistic.averageValue" = "Среднее значение";
 "titleStatistic.placeholder" = "Анализировать пока нечего";
+
+/* Alert main controller */
+"alert.delete.title" = "Уверены, что хотите удалить трекер?";
+"alert.delete.confirm" = "Удалить";
+"alert.delete.cancel" = "Отменить";

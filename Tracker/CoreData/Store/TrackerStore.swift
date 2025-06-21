@@ -138,6 +138,35 @@ final class TrackerStore: NSObject {
         try context.save()
     }
     
+    func deleteTracker(withId id: UUID) throws {
+        guard let trackerCore = fetchTrackerCoreData(by: id) else { return }
+        context.delete(trackerCore)
+        try context.save()
+    }
+    
+    func updateTracker(_ tracker: Tracker, newCategoryTitle: String? = nil) throws {
+        guard let core = fetchTrackerCoreData(by: tracker.idTrackers) else {
+            throw TrackerStoreError.decodingErrorInvalidIdTrackers
+        }
+        
+        updateTrackerCoreData(core, with: tracker)
+        
+        if let newCat = newCategoryTitle {
+            let req: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+            req.predicate = NSPredicate(format: "title == %@", newCat)
+            let categoryCore: TrackerCategoryCoreData
+            if let exist = try context.fetch(req).first {
+                categoryCore = exist
+            } else {
+                categoryCore = TrackerCategoryCoreData(context: context)
+                categoryCore.title = newCat
+            }
+            core.trackerCategory = categoryCore
+        }
+
+        try context.save()
+    }
+    
     // MARK: - Private Methods
     private func updateTrackerCoreData(_ trackerCoreData: TrackerCoreData, with mix: Tracker){
         trackerCoreData.idTrackers = mix.idTrackers
@@ -147,6 +176,8 @@ final class TrackerStore: NSObject {
         trackerCoreData.scheduleTrackers = mix.scheduleTrackers as NSSet
         trackerCoreData.isPinned = mix.isPinned
     }
+    
+    
 }
 
 // MARK: - NSFetchedResultsControllerDelegate

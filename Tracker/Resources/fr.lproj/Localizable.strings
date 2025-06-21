@@ -36,6 +36,7 @@
 "button.category" = "Catégorie";
 "button.schedule" = "Planning";
 "button.onBoarding" = "Ça, c’est de la technologie !";
+"button.save" = "Enregistrer";
 
 /* Collection Titles*/
 "title.emoji" = "Émoji";
@@ -77,3 +78,8 @@
 "titleStatistic.endTrackers" = "Trackers terminés";
 "titleStatistic.averageValue" = "Valeur moyenne";
 "titleStatistic.placeholder" = "Rien à analyser pour le moment";
+
+/* Alert main controller */
+"alert.delete.title" = "Êtes-vous sûr de vouloir supprimer ce tracker ?";
+"alert.delete.confirm" = "Supprimer";
+"alert.delete.cancel" = "Annuler";

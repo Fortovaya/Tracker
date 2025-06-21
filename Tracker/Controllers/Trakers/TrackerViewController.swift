@@ -23,6 +23,8 @@ final class TrackerViewController: BaseController {
     private let categoryStore = TrackerCategoryStore()
     private let recordStore = TrackerRecordStore()
     
+    private lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewController: self)
+    
     private lazy var dizzyImage: UIImageView = {
         let image = UIImage(named: Resources.ImageNames.dizzy.imageName)
         let imageView = UIImageView(image: image)
@@ -231,7 +233,6 @@ final class TrackerViewController: BaseController {
             result.append(.init(title: "Закреплённые", trackers: pinned))
         }
         
-        // Вместо группировки по DTO, пробегаем по существующим категориям:
         let fetched = categoryStore.fetchedCategories
             .filter { !$0.trackers.isEmpty }
         for category in fetched {
@@ -421,7 +422,17 @@ extension TrackerViewController: TrackerCellDelegate {
     }
     
     func didRequestDelete(trackerId: UUID) {
-        //TO DO:
+        let model = AlertModel(title: Resources.Alert.deleteTitle.text,
+                               message: nil,
+                               buttonText: Resources.Alert.deleteConfirm.text,
+                               completion: { [weak self] in
+            guard let self = self else { return }
+            try? self.store.deleteTracker(withId: trackerId)
+            DispatchQueue.main.async { self.loadCategories() }
+        },
+                               secondButtonText: Resources.Alert.deleteCancel.text,
+                               secondButtonCompletion: nil)
+        alertPresenter.present(model)
     }
 }
 
