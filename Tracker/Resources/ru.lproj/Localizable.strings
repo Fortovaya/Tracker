@@ -89,3 +89,10 @@
 
 /* Pinned */
 "title.isPinned" = "Закрепленные";
+
+/* Option filtres */
+"filterOption.allTrackers" = "Все трекеры";
+"filterOption.todayTrackers" = "Трекеры на сегодня";
+"filterOption.completedTrackers" = "Завершенные";
+"filterOption.uncompletedTrackers" = "Не завершенные";
+"label.nothingFound" = "Ничего не найдено";

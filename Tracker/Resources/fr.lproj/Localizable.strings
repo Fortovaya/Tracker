@@ -89,3 +89,9 @@
 
 /* Pinned */
 "title.isPinned" = "Épinglés";
+
+/* Option filtres */
+"filterOption.allTrackers" = "Tous les trackers";
+"filterOption.todayTrackers" = "Trackers pour aujourd'hui";
+"filterOption.completedTrackers" = "Terminés";
+"filterOption.uncompletedTrackers" = "Non terminés";

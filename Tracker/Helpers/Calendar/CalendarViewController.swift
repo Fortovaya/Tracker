@@ -30,7 +30,10 @@ final class CalendarViewController: UIViewController {
             picker.preferredDatePickerStyle = .compact
         }
         
-        picker.locale = Locale(identifier: "ru_RU")
+//        picker.locale = Locale(identifier: "ru_RU")
+        picker.locale = Locale.autoupdatingCurrent
+        picker.calendar = Calendar.autoupdatingCurrent
+        picker.timeZone = TimeZone.autoupdatingCurrent
         picker.translatesAutoresizingMaskIntoConstraints = false
         
         picker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
@@ -43,11 +46,14 @@ final class CalendarViewController: UIViewController {
     //MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-//        overrideUserInterfaceStyle = .light
         setupLayout()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+        
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDateSelection))
+        doubleTap.numberOfTapsRequired = 2
+        calendarPicker.addGestureRecognizer(doubleTap)
     }
     //MARK: Private Methods
     private func setupLayout() {
@@ -72,7 +78,6 @@ final class CalendarViewController: UIViewController {
     
     // MARK: - Action
     @objc private func backgroundTapped(_ gesture: UITapGestureRecognizer) {
-        // Проверка тапа внутри календаря
         let location = gesture.location(in: view)
         if !containerView.frame.contains(location) {
             dismiss(animated: true)
@@ -80,7 +85,16 @@ final class CalendarViewController: UIViewController {
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
-        let picked = sender.date
+        if #unavailable(iOS 14.0) {
+            let picked = sender.date
+            onDatePicked?(picked)
+            dismiss(animated: true)
+        }
+    }
+    
+    @objc private func handleDateSelection() {
+        let picked = calendarPicker.date
         onDatePicked?(picked)
+        dismiss(animated: true)
     }
 }

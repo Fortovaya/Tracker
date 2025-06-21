@@ -55,6 +55,7 @@ enum Resources {
     enum ImageNames: String {
         case dizzy = "dizzy"
         case placeholderStatistik = "placeholderStatistik"
+        case filter = "resultErrors"
         
         var imageName: String { rawValue }
     }
@@ -73,6 +74,7 @@ enum Resources {
         case dizzyLabel = "label.emptyState"
         case searchPlaceholder = "label.searchPlaceholder"
         case categoryDizzyLabel = "label.categoryDizzyLabel"
+        case nothingFound = "label.nothingFound"
         
         var text: String {
             NSLocalizedString(self.rawValue, comment: "")
@@ -155,6 +157,21 @@ enum Resources {
         
         var text: String {
             NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum FilterOption: String, CaseIterable {
+        case allTrackers = "filterOption.allTrackers"
+        case todayTrackers = "filterOption.todayTrackers"
+        case completed = "filterOption.completedTrackers"
+        case uncompleted = "filterOption.uncompletedTrackers"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+        
+        static var allOptions: [String] {
+            allCases.map { $0.text }
         }
     }
 }

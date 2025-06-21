@@ -83,8 +83,11 @@ extension TrackerCollectionServices: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets (top: params.topInset, left: params.leftInset,
-                             bottom: params.bottomInset, right: params.rightInset)
+        let isLastSection = section == categories.count - 1
+        return UIEdgeInsets (top: params.topInset,
+                             left: params.leftInset,
+                             bottom: isLastSection ? params.bottomInset + 50 : params.bottomInset,
+                             right: params.rightInset)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,

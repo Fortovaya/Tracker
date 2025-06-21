@@ -29,4 +29,10 @@ enum Identifier {
         
         var text: String { rawValue }
     }
+    
+    enum TrackerFiltersViewController: String {
+        case trackerFiltersCell = "TrackerFiltersCell"
+        
+        var text: String { rawValue }
+    }
 }
