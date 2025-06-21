@@ -14,6 +14,7 @@ final class TrackerViewController: BaseController {
     let params = GeometricParams(cellCount: 2, cellSpacing: 10, leftInset: 16,
                                  rightInset: 16, topInset: 12, bottomInset: 16)
     
+    
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var newTrackers: [Tracker] = []
@@ -26,31 +27,23 @@ final class TrackerViewController: BaseController {
     private lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewController: self)
     private var currentFilter: TrackerFilter = .all
     
-    private lazy var dizzyImage: UIImageView = {
-        let image = UIImage(named: Resources.ImageNames.dizzy.imageName)
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.isHidden = false
-        return imageView
+    private var filteredCategories: [TrackerCategory] = []
+    private var isSearching = false
+    
+    private lazy var placeholderView: PlaceholderView = {
+        let view = PlaceholderView()
+        view.configure(
+            image: UIImage(named: Resources.ImageNames.dizzy.imageName),
+            text: Resources.Labels.dizzyLabel.text
+        )
+        view.isHidden = true
+        return view
     }()
     
-    private lazy var dizzyLabel: UILabel = {
-        let label = UILabel()
-        label.text = Resources.Labels.dizzyLabel.text
-        label.textColor = .ypBlack
-        label.font = .systemFont(ofSize: 12, weight: .medium)
-        return label
-    }()
-    
-    private lazy var dizzyStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [dizzyImage, dizzyLabel])
-        stack.axis = .vertical
-        stack.spacing = 8
-        stack.alignment = .center
-        stack.isHidden = false
-        return stack
-    }()
+    private lazy var searchService = TrackerSearchService(
+        trackerStore: store,
+        categoryStore: categoryStore
+    )
     
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -135,7 +128,7 @@ final class TrackerViewController: BaseController {
         configureConstraintsTrackerViewController()
         updatePlaceholderVisibility()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadCategories()
@@ -144,16 +137,14 @@ final class TrackerViewController: BaseController {
     
     //MARK: Private methods
     private func configureConstraintsTrackerViewController() {
-        view.addSubviews([dizzyStackView, trackerCollectionMain, filterButton])
-        [dizzyStackView, dizzyImage, trackerCollectionMain, filterButton].disableAutoresizingMask()
+        view.addSubviews([placeholderView,trackerCollectionMain, filterButton])
+        [placeholderView, trackerCollectionMain, filterButton].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            dizzyImage.widthAnchor.constraint(equalToConstant: 80),
-            dizzyImage.heightAnchor.constraint(equalToConstant: 80),
-            
-            dizzyStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            dizzyStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            dizzyStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -304),
+            placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            placeholderView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            placeholderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             trackerCollectionMain.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             trackerCollectionMain.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -200,19 +191,21 @@ final class TrackerViewController: BaseController {
         )
     }
     
+    private func showPlaceholder(_ type: PlaceholderType) {
+        placeholderView.configure(image: type.image, text: type.text)
+    }
+    
     private func updatePlaceholderVisibility(using filteredCategories: [TrackerCategory]){
         let totalTrackers = filteredCategories.reduce(0) { $0 + $1.trackers.count }
         let isEmpty = (totalTrackers == 0)
-        dizzyStackView.isHidden = !isEmpty
+        placeholderView.isHidden = !isEmpty
         trackerCollectionMain.isHidden = isEmpty
         
         if isEmpty {
-            if currentFilter != .all {
-                dizzyImage.image = UIImage(named: Resources.ImageNames.filter.imageName)
-                dizzyLabel.text = Resources.Labels.nothingFound.text
+            if isSearching || currentFilter != .all {
+                showPlaceholder(.noSearchResults)
             } else {
-                dizzyImage.image = UIImage(named: Resources.ImageNames.dizzy.imageName)
-                dizzyLabel.text = Resources.Labels.dizzyLabel.text
+                showPlaceholder(.emptyTrackers)
             }
         }
         
@@ -220,6 +213,12 @@ final class TrackerViewController: BaseController {
     }
     
     private func updateFilterButtonVisibility() {
+        
+        guard !isSearching else {
+            filterButton.isHidden = true
+            return
+        }
+        
         let hasTrackers = categories.isEmpty
         let shouldShowFilterButton = !hasTrackers || currentFilter != .all
         
@@ -229,7 +228,29 @@ final class TrackerViewController: BaseController {
     }
     
     private func updatePlaceholderVisibility() {
-        updatePlaceholderVisibility(using: categories)
+        let source = isSearching ? filteredCategories : categories
+        updatePlaceholderVisibility(using: source)
+    }
+    
+    private func updateHelper() {
+        let data = isSearching ? filteredCategories : categories
+        
+        let headerTitles = data.map { $0.title }
+        let footerTitles = data.map { category in
+            let completedDays = category.trackers.reduce(0) { count, tracker in
+                completedTrackers.filter { $0.trackerId == tracker.idTrackers }.count
+            }
+            return "\(completedDays) \(dayString(for: completedDays))"
+        }
+        
+        helper = TrackerCollectionServices(
+            categories: data,
+            params: params,
+            collection: trackerCollectionMain,
+            headerTitles: headerTitles,
+            footerTitles: footerTitles,
+            cellDelegate: self
+        )
     }
     
     private func refreshUI() {
@@ -241,7 +262,7 @@ final class TrackerViewController: BaseController {
         categories = newCategories
         refreshUI()
     }
-
+    
     private func loadCategories() {
         let weekday = WeekDay.orderedWeekday(date: currentDate)
         var allTrackers = store.trackers.filter { $0.scheduleTrackers.contains(weekday) }
@@ -333,34 +354,14 @@ final class TrackerViewController: BaseController {
         helper?.updateCategories(with: categories, footerTitles: newFooters)
     }
     
-    private func filtersTrackers(for weekDay: WeekDay){
-        let filtered = categories.compactMap { category in
-            let trackers = category.trackers.filter {
-                $0.scheduleTrackers.contains(weekDay)
-            }
-            
-            let filteredTrackers: [Tracker]
-            switch currentFilter {
-                case .completed:
-                    filteredTrackers = trackers.filter { tracker in
-                        completedTrackers.contains {
-                            $0.trackerId == tracker.idTrackers &&
-                            Calendar.current.isDate($0.date, inSameDayAs: currentDate)
-                        }
-                    }
-                case .uncompleted:
-                    filteredTrackers = trackers.filter { tracker in
-                        !completedTrackers.contains {
-                            $0.trackerId == tracker.idTrackers &&
-                            Calendar.current.isDate($0.date, inSameDayAs: currentDate)
-                        }
-                    }
-                case .all, .today:
-                    filteredTrackers = trackers
-            }
-            
-            return filteredTrackers.isEmpty ? nil : TrackerCategory(title: category.title, trackers: filteredTrackers)
-        }
+    private func filtersTrackers(for weekDay: WeekDay) {
+        let filterService = TrackerFilterService(
+            currentFilter: currentFilter,
+            completedTrackers: completedTrackers,
+            currentDate: currentDate
+        )
+        
+        let filtered = filterService.filtersTrackers(from: categories, for: weekDay)
         
         helper?.updateCategories(with: filtered)
         updatePlaceholderVisibility(using: filtered)
@@ -390,6 +391,12 @@ final class TrackerViewController: BaseController {
                 loadCategories()
         }
         updateFilterButtonVisibility()
+    }
+    
+    private func reloadCollection() {
+        let data = isSearching ? filteredCategories : categories
+        helper?.updateCategories(with: data)
+        updatePlaceholderVisibility(using: data)
     }
     
     // MARK: - Action
@@ -430,13 +437,33 @@ final class TrackerViewController: BaseController {
         presentPageSheet(viewController: filtersVC)
     }
 }
-
+//MARK: - UISearchResultsUpdating
 extension TrackerViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        guard let text = searchController.searchBar.text, !text.isEmpty else { return }
-        YMMYandexMetrica.reportEvent("main_search_input", parameters: ["query": text])
+        guard let text = searchController.searchBar.text, !text.isEmpty else {
+            isSearching = false
+            filteredCategories = []
+            reloadCollection()
+            return
+        }
+        
+        YMMYandexMetrica.reportEvent("main_search_used", parameters: ["query": text])
+        
+        filteredCategories = searchService.searchTrackers(with: text)
+        isSearching = true
+        reloadCollection()
     }
 }
+//MARK:  - UISearchBarDelegate
+extension TrackerViewController: UISearchBarDelegate {
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        isSearching = false
+        filteredCategories = []
+        reloadCollection()
+    }
+}
+
 
 // MARK: TrackerCreationViewControllerDelegate
 extension TrackerViewController: TrackerCreationViewControllerDelegate {
