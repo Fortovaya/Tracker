@@ -135,6 +135,22 @@ final class TrackerViewController: BaseController {
         updateCompletedTrackers()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        YMMYandexMetrica.reportEvent("event", parameters: [
+            "event": "open",
+            "screen": "Main"
+        ])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        YMMYandexMetrica.reportEvent("event", parameters: [
+            "event": "close",
+            "screen": "Main"
+        ])
+    }
+    
     //MARK: Private methods
     private func configureConstraintsTrackerViewController() {
         view.addSubviews([placeholderView,trackerCollectionMain, filterButton])
@@ -401,7 +417,8 @@ final class TrackerViewController: BaseController {
     
     // MARK: - Action
     @objc private func tapAddTrackerButton() {
-        YMMYandexMetrica.reportEvent("main_add_tracker_tapped")
+        YMMYandexMetrica.reportEvent("event", parameters: ["event": "click","screen": "Main","item": "add_track"])
+        
         let typeVC = TrackerTypeViewController()
         typeVC.habitDelegate = self
         presentPageSheet(viewController: typeVC)
@@ -416,7 +433,8 @@ final class TrackerViewController: BaseController {
             guard let self = self else { return }
             
             let formattedDate = DateFormatter.dateFormatter.string(from: selectedDate)
-            YMMYandexMetrica.reportEvent("main_date_selected", parameters: ["date": formattedDate])
+            YMMYandexMetrica.reportEvent("event", parameters: ["event": "click","screen": "Main","item": "date_picker",
+                                                               "value": formattedDate])
             
             self.currentDate = selectedDate
             let title = DateFormatter.dateFormatter.string(from: selectedDate)
@@ -428,6 +446,7 @@ final class TrackerViewController: BaseController {
     }
     
     @objc private func didTapFilterButton(){
+        YMMYandexMetrica.reportEvent("event", parameters: ["event": "click","screen": "Main","item": "filter"])
         let filtersVC = TrackerFiltersViewController(selectedFilter: currentFilter)
         filtersVC.onFilterSelected = { [weak self] filter in
             guard let self = self else { return }
@@ -447,7 +466,8 @@ extension TrackerViewController: UISearchResultsUpdating {
             return
         }
         
-        YMMYandexMetrica.reportEvent("main_search_used", parameters: ["query": text])
+        YMMYandexMetrica.reportEvent("event", parameters: ["event": "click","screen": "Main","item": "search",
+                                                           "value": text])
         
         filteredCategories = searchService.searchTrackers(with: text)
         isSearching = true
@@ -500,6 +520,8 @@ extension TrackerViewController: TrackerCreationViewControllerDelegate {
 extension TrackerViewController: TrackerCellDelegate {
     
     func trackerCellDidTapPlus(_ cell: TrackerCell, id: UUID) {
+        YMMYandexMetrica.reportEvent("event", parameters: ["event": "click","screen": "Main","item": "track"])
+        
         let today = currentDate
         toggleTrackerCompletion(for: id, on: today)
         updateFooters(for: today)
@@ -536,6 +558,8 @@ extension TrackerViewController: TrackerCellDelegate {
     }
     
     func didRequestEdit(trackerId: UUID) {
+        YMMYandexMetrica.reportEvent("event", parameters: ["event": "click","screen": "Main","item": "edit"])
+        
         guard
             let tracker = store.trackers.first(where: { $0.idTrackers == trackerId }),
             let category = categories.first(where: { $0.trackers.contains(where: { $0.idTrackers == trackerId }) })
@@ -557,6 +581,9 @@ extension TrackerViewController: TrackerCellDelegate {
                                buttonText: Resources.Alert.deleteConfirm.text,
                                completion: { [weak self] in
             guard let self = self else { return }
+            
+            YMMYandexMetrica.reportEvent("event", parameters: ["event": "click","screen": "Main","item": "delete"])
+            
             try? self.store.deleteTracker(withId: trackerId)
             DispatchQueue.main.async { self.loadCategories() }
         },
