@@ -260,15 +260,15 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
         configurationForMenuAtLocation location: CGPoint
     ) -> UIContextMenuConfiguration? {
         guard let id = trackerId else { return nil }
-        let pinTitle = isPinnedState ? "Открепить" : "Закрепить"
+        let pinTitle = isPinnedState ? Resources.Alert.actionUnpin.text : Resources.Alert.actionPin.text
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let pin = UIAction(title: pinTitle) { _ in
                 self.delegate?.didTogglePin(trackerId: id)
             }
-            let edit = UIAction(title: "Редактировать") { _ in
+            let edit = UIAction(title: Resources.Alert.actionEdit.text) { _ in
                 self.delegate?.didRequestEdit(trackerId: id)
             }
-            let delete = UIAction(title: "Удалить",
+            let delete = UIAction(title: Resources.Alert.deleteConfirm.text,
                                   attributes: .destructive) { _ in
                 self.delegate?.didRequestDelete(trackerId: id)
             }

@@ -163,7 +163,6 @@ final class TrackerStore: NSObject {
             }
             core.trackerCategory = categoryCore
         }
-
         try context.save()
     }
     

@@ -230,7 +230,7 @@ final class TrackerViewController: BaseController {
         var result: [TrackerCategory] = []
         
         if !pinned.isEmpty {
-            result.append(.init(title: "Закреплённые", trackers: pinned))
+            result.append(.init(title: Resources.Pinned.isPinned.text, trackers: pinned))
         }
         
         let fetched = categoryStore.fetchedCategories
@@ -376,6 +376,11 @@ extension TrackerViewController: TrackerCreationViewControllerDelegate {
         helper?.updateCategories(with: categories)
         updatePlaceholderVisibility()
     }
+    
+    func trackerCreationViewController(_ controller: NewTrackerViewController,
+                                       didEditTracker tracker: Tracker, oldCategory: String) {
+        DispatchQueue.main.async { self.loadCategories() }
+    }
 }
 
 // MARK: TrackerCellDelegate
@@ -418,7 +423,19 @@ extension TrackerViewController: TrackerCellDelegate {
     }
     
     func didRequestEdit(trackerId: UUID) {
-        //TO DO:
+        guard
+            let tracker = store.trackers.first(where: { $0.idTrackers == trackerId }),
+            let category = categories.first(where: { $0.trackers.contains(where: { $0.idTrackers == trackerId }) })
+        else {
+            assertionFailure("❌ Не удалось найти трекер или категорию для редактирования")
+            return
+        }
+        
+        let editVC = NewTrackerViewController(
+            mode: .editHabit(trackerToEdit: tracker, categoryToEdit: category.title)
+        )
+        editVC.delegate = self
+        presentPageSheet(viewController: editVC)
     }
     
     func didRequestDelete(trackerId: UUID) {

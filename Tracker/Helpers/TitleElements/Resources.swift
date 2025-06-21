@@ -36,6 +36,7 @@ enum Resources {
         case category = "button.category"
         case schedule = "button.schedule"
         case onBoarding = "button.onBoarding"
+        case save = "button.save"
         
         var text: String {
             NSLocalizedString(self.rawValue, comment: "")
@@ -130,6 +131,27 @@ enum Resources {
         case averageValue = "titleStatistic.averageValue"
         
         case titlePlaceholder = "titleStatistic.placeholder"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum Alert: String {
+        case deleteTitle = "alert.delete.title"
+        case deleteConfirm = "alert.delete.confirm"
+        case deleteCancel = "alert.delete.cancel"
+        case actionUnpin = "action.unpin";
+        case actionPin = "action.pin";
+        case actionEdit = "action.edit";
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum Pinned: String {
+        case isPinned = "title.isPinned"
         
         var text: String {
             NSLocalizedString(self.rawValue, comment: "")

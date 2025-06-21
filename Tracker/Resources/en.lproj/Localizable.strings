@@ -83,3 +83,9 @@
 "alert.delete.title" = "Are you sure you want to delete the tracker?";
 "alert.delete.confirm" = "Delete";
 "alert.delete.cancel" = "Cancel";
+"action.unpin" = "Unpin";
+"action.pin" = "Pin";
+"action.edit" = "Edit";
+
+/* Pinned */
+"title.isPinned" = "Pinned";

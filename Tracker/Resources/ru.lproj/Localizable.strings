@@ -83,3 +83,9 @@
 "alert.delete.title" = "Уверены, что хотите удалить трекер?";
 "alert.delete.confirm" = "Удалить";
 "alert.delete.cancel" = "Отменить";
+"action.unpin" = "Открепить";
+"action.pin" = "Закрепить";
+"action.edit" = "Редактировать";
+
+/* Pinned */
+"title.isPinned" = "Закрепленные";
