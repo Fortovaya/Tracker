@@ -95,3 +95,4 @@
 "filterOption.todayTrackers" = "Trackers for Today";
 "filterOption.completedTrackers" = "Completed";
 "filterOption.uncompletedTrackers" = "Uncompleted";
+"label.nothingFound" = "Nothing found";
