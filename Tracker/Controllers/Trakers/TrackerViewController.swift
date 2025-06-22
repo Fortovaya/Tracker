@@ -157,10 +157,9 @@ final class TrackerViewController: BaseController {
         [placeholderView, trackerCollectionMain, filterButton].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
-            placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             placeholderView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             placeholderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            placeholderView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -304),
             
             trackerCollectionMain.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             trackerCollectionMain.trailingAnchor.constraint(equalTo: view.trailingAnchor),

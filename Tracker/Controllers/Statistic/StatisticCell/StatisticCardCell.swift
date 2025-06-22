@@ -25,7 +25,7 @@ final class StatisticCardCell: UITableViewCell {
     //MARK: - Private variables
     private lazy var cardView: GradientBorderView = {
         let view = GradientBorderView()
-        view.backgroundColor = .ypWhite
+        view.backgroundColor = .systemBackground
         view.layer.cornerRadius = Constants.cardCornerRadius
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -77,7 +77,7 @@ final class StatisticCardCell: UITableViewCell {
     
     // MARK: - Private Methods
     private func setupUI() {
-        backgroundColor = .ypWhite
+        backgroundColor = .systemBackground
         selectionStyle = .none
         
         contentView.addSubview(cardView)

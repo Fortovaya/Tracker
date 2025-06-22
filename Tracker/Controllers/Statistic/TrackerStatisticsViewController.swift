@@ -32,7 +32,7 @@ final class TrackerStatisticsViewController: BaseController {
         let table = UITableView()
         table.register(StatisticCardCell.self, forCellReuseIdentifier: StatisticCardCell.reuseIdentifier)
         table.separatorStyle = .none
-        table.backgroundColor = .ypWhite
+        table.backgroundColor = .systemBackground
         table.isScrollEnabled = false
         table.dataSource = self
         table.delegate = self

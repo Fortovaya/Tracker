@@ -29,7 +29,7 @@ final class TrackerTests: XCTestCase {
                                   total: 2)
         
         let vc = OnboardingPageViewController(page: page)
-        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11))
+        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11), record: false)
     }
     
     func testOnboardingSecondPage() {
@@ -38,21 +38,36 @@ final class TrackerTests: XCTestCase {
                                   index: 1, total: 2)
         
         let vc = OnboardingPageViewController(page: page)
-        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11))
+        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11), record: false)
     }
     
-    func testTrackerViewController(){
+    func testTrackerViewControllerLight(){
         let vc = TrackerViewController()
-        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11))
+        let traits = UITraitCollection(userInterfaceStyle: .light)
+        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11, traits: traits), record: false)
     }
     
-    func testTrackerTypeViewController(){
+    func testTrackerViewControllerLightDark(){
+        let vc = TrackerViewController()
+        let traits = UITraitCollection(userInterfaceStyle: .dark)
+        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11, traits: traits), record: false)
+    }
+    
+    
+    func testTrackerTypeViewControllerLight(){
         let vc = TrackerTypeViewController()
-        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11))
+        let traits = UITraitCollection(userInterfaceStyle: .light)
+        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11, traits: traits), record: false)
+    }
+    
+    func testTrackerTypeViewControllerDark(){
+        let vc = TrackerTypeViewController()
+        let traits = UITraitCollection(userInterfaceStyle: .dark)
+        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11, traits: traits), record: false)
     }
     
     func testScheduleViewController(){
         let vc = ScheduleViewController()
-        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11))
+        assertSnapshot(of: vc, as: .image(size: Self.SnapshotDevice.iPhone11), record: false)
     }
 }

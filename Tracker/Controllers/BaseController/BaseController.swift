@@ -14,7 +14,8 @@ class BaseController: UIViewController {
     }
     //MARK: - Private Methods
     private func configureViewController(){
-        view.backgroundColor = .ypWhite
+//        view.backgroundColor = .ypWhite
+        view.backgroundColor = .systemBackground
         hideKeyboardWhenTappedAround()
     }
     
