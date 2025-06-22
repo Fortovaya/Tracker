@@ -56,6 +56,7 @@ enum Resources {
         case dizzy = "dizzy"
         case placeholderStatistik = "placeholderStatistik"
         case filter = "resultErrors"
+        case pinIndicator = "pinSquare"
         
         var imageName: String { rawValue }
     }

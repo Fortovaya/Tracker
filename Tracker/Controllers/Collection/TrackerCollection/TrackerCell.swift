@@ -122,7 +122,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private lazy var pinIndicatorView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "pin.fill")
+        imageView.image = UIImage(named: Resources.ImageNames.pinIndicator.imageName)
         imageView.tintColor = .white
         imageView.isHidden = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
