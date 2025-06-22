@@ -111,6 +111,7 @@ final class TrackerViewController: BaseController {
     
     private lazy var filterButton = BaseButton(title: .filters,
                                                backgroundColor: .ypBlue,
+                                               titleColor: .white,
                                                height: 50,
                                                target: self,
                                                action: #selector(didTapFilterButton))
@@ -239,7 +240,7 @@ final class TrackerViewController: BaseController {
         
         filterButton.isHidden = !shouldShowFilterButton
         let isFilterActive = currentFilter != .all
-        filterButton.setTitleColor(isFilterActive ? .ypRed : .ypWhite, for: .normal)
+        filterButton.setTitleColor(isFilterActive ? .ypRed : .white, for: .normal)
     }
     
     private func updatePlaceholderVisibility() {
