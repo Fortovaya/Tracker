@@ -28,14 +28,12 @@ final class TrackerStyleCell: UICollectionViewCell {
     //MARK: - Private variables
     private var kind: Kind?
     
-    private lazy var emojiView: UIImageView = {
-        let emojiView = UIImageView()
-        emojiView.layer.cornerRadius = Constants.contentCornerRadius
-        emojiView.clipsToBounds = true
-        emojiView.contentMode = .scaleAspectFit
-        emojiView.backgroundColor = .clear
-        emojiView.isHidden = true
-        return emojiView
+    private lazy var emojiLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 32)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private lazy var colorsView: UIView = {
@@ -81,7 +79,8 @@ final class TrackerStyleCell: UICollectionViewCell {
     
     //MARK: - Private Methods
     private func resetStyleCell(){
-        emojiView.image = nil
+//        emojiView.image = nil
+        emojiLabel.text = nil
         contentView.backgroundColor = .clear
         contentView.layer.borderWidth = 0
         contentView.layer.borderColor = UIColor.clear.cgColor
@@ -89,14 +88,14 @@ final class TrackerStyleCell: UICollectionViewCell {
     }
     
     private func setupStyleCell(){
-        [emojiView, colorsView].disableAutoresizingMask()
-        contentView.addSubviews([emojiView, colorsView])
+        [emojiLabel, colorsView].disableAutoresizingMask()
+        contentView.addSubviews([emojiLabel, colorsView])
         
         NSLayoutConstraint.activate([
-            emojiView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.emojiVerticalPadding),
-            emojiView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.emojiVerticalPadding),
-            emojiView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.emojiHorizontalPadding),
-            emojiView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.emojiHorizontalPadding),
+            emojiLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.emojiVerticalPadding),
+            emojiLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.emojiVerticalPadding),
+            emojiLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.emojiHorizontalPadding),
+            emojiLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.emojiHorizontalPadding),
             
             colorsView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.colorPadding),
             colorsView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.colorPadding),
@@ -111,12 +110,13 @@ final class TrackerStyleCell: UICollectionViewCell {
     func configureStyleCell(with emoji: Resources.EmojiImage?,color: UIColor){
         if let emoji = emoji {
             kind = .emoji
-            emojiView.isHidden = false
+            emojiLabel.isHidden = false
             colorsView.isHidden = true
-            emojiView.image = UIImage(named: emoji.imageName)
+//            emojiView.image = UIImage(named: emoji.imageName)
+            emojiLabel.text = emoji.symbol
         } else {
             kind = .color
-            emojiView.isHidden = true
+            emojiLabel.isHidden = true
             colorsView.isHidden = false
             colorsView.backgroundColor = color
         }

@@ -103,6 +103,29 @@ enum Resources {
         case emojiIsland = "emojiIsland"
         case emojiSleepy = "emojiSleepy"
         
+        var symbol: String {
+            switch self {
+                case .emojiSmile: return "🙂"
+                case .emojiCatHeartEyes: return "😻"
+                case .emojiHibiscus: return "🌺"
+                case .emojiDog: return "🐶"
+                case .emojiHeart: return "❤️"
+                case .emojiScream: return "😱"
+                case .emojiAngel: return "😇"
+                case .emojiAngry: return "😠"
+                case .emojiColdFace: return "🥶"
+                case .emojiThinking: return "🤔"
+                case .emojiRaisedHands: return "🙌"
+                case .emojiBurger: return "🍔"
+                case .emojiBroccoli: return "🥦"
+                case .emojiTableTennis: return "🏓"
+                case .emojiGoldMedal: return "🥇"
+                case .emojiGuitar: return "🎸"
+                case .emojiIsland: return "🏝"
+                case .emojiSleepy: return "😴"
+            }
+        }
+        
         static var allCasesList: [EmojiImage] { allCases }
         static var allImageNames: [String] { allCases.map { $0.imageName } }
         
