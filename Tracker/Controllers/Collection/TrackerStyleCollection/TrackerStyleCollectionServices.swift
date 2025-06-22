@@ -44,11 +44,11 @@ final class TrackerStyleCollectionServices: NSObject {
         
         sections = [
             .init(
-                title: "Emoji",
+                title: NSLocalizedString("title.emoji", comment: ""),
                 items: Resources.EmojiImage.allCases.map { .emoji($0) }
             ),
             .init(
-                title: "Цвет",
+                title: NSLocalizedString("title.color", comment: ""),
                 items: UIColor.trackerCellColors.map { .color($0) }
             )
         ]

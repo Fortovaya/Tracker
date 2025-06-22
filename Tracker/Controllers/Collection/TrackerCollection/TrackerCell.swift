@@ -16,6 +16,8 @@ final class TrackerCell: UICollectionViewCell {
         static let emojiSizeMultiplier: CGFloat = 0.9
         static let plusButtonSize: CGFloat = 34
         static let bottomSpacing: CGFloat = 8
+        static let pinIndicatorWidth: CGFloat = 8
+        static let pinIndicatorHeigh: CGFloat = 12
     }
     //MARK: - Delegate
     weak var delegate: TrackerCellDelegate?
@@ -23,6 +25,8 @@ final class TrackerCell: UICollectionViewCell {
     static let identifier = Identifier.TrackerCollection.trackerCell.text
     // MARK: - Private variables
     private var trackerId: UUID?
+    private var isPinnedState: Bool = false
+    private var originalContainerBackground: UIColor?
     
     private lazy var containerCellView: UIView = {
         let view = UIView()
@@ -75,13 +79,23 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
+    private lazy var plusButtonImageView: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: Resources.ButtonIcons.plus.imageName)
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.widthAnchor.constraint(equalToConstant: 10).isActive = true
+        image.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        return image
+    }()
+    
     private lazy var plusButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: Resources.ButtonIcons.plus.imageName), for: .normal)
-        button.setImage(UIImage(named: Resources.ButtonIcons.checkmark.imageName), for: .selected)
+        button.setImage(UIImage(named: Resources.ButtonIcons.done.imageName), for: .selected)
         button.tintColor = .ypWhite
         button.backgroundColor = containerCellView.backgroundColor
-        
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+
         [button].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
@@ -116,9 +130,20 @@ final class TrackerCell: UICollectionViewCell {
         return stack
     }()
     
+    private lazy var pinIndicatorView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: Resources.ImageNames.pinIndicator.imageName)
+        imageView.tintColor = .white
+        imageView.isHidden = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     // MARK: - Override Methods
     override init(frame: CGRect) {
         super.init(frame: frame)
+        let interaction = UIContextMenuInteraction(delegate: self)
+        containerCellView.addInteraction(interaction)
         setupCell()
     }
     
@@ -133,6 +158,8 @@ final class TrackerCell: UICollectionViewCell {
         plusButton.isSelected = false
         plusButton.backgroundColor = containerCellView.backgroundColor
         updatePlusButtonAlpha()
+        pinIndicatorView.isHidden = true
+        containerCellView.backgroundColor = .clear
         resetCell()
     }
     
@@ -146,13 +173,14 @@ final class TrackerCell: UICollectionViewCell {
         plusButton.backgroundColor = nil
         updatePlusButtonAlpha()
         trackerId = nil
+        pinIndicatorView.isHidden = true
     }
     
     private func setupCell() {
         let maxLabelHeight = daysLabel.font.lineHeight * CGFloat(daysLabel.numberOfLines)
         
         contentView.addSubviews([collectionCellStackView])
-        containerCellView.addSubviews([emojiContainerView,trackerLabel])
+        containerCellView.addSubviews([emojiContainerView,trackerLabel, pinIndicatorView])
         emojiContainerView.addSubviews([emojiImageView])
         emojiFooterView.addSubviews([plusButton,daysLabel])
         
@@ -183,10 +211,18 @@ final class TrackerCell: UICollectionViewCell {
             plusButton.trailingAnchor.constraint(equalTo: emojiFooterView.trailingAnchor, constant: -12),
             plusButton.bottomAnchor.constraint(equalTo: emojiFooterView.bottomAnchor, constant: -16),
             
+            plusButton.widthAnchor.constraint(equalToConstant: 34),
+            plusButton.heightAnchor.constraint(equalToConstant: 34),
+            
             daysLabel.heightAnchor.constraint(equalToConstant: maxLabelHeight),
             daysLabel.centerYAnchor.constraint(equalTo: plusButton.centerYAnchor),
             daysLabel.trailingAnchor.constraint(equalTo: plusButton.leadingAnchor),
-            daysLabel.leadingAnchor.constraint(equalTo: emojiFooterView.leadingAnchor, constant: 12)
+            daysLabel.leadingAnchor.constraint(equalTo: emojiFooterView.leadingAnchor, constant: 12),
+            
+            pinIndicatorView.topAnchor.constraint(equalTo: containerCellView.topAnchor, constant: Constants.padding),
+            pinIndicatorView.trailingAnchor.constraint(equalTo: containerCellView.trailingAnchor, constant: -Constants.padding),
+            pinIndicatorView.widthAnchor.constraint(equalToConstant: Constants.pinIndicatorWidth),
+            pinIndicatorView.heightAnchor.constraint(equalToConstant: Constants.pinIndicatorHeigh),
         ])
         
         trackerLabel.setContentHuggingPriority(.required, for: .vertical)
@@ -204,21 +240,23 @@ final class TrackerCell: UICollectionViewCell {
                        text: String,
                        color: UIColor,
                        idTrackers: UUID,
+                       isPinned: Bool,
                        for date: Date) {
         emojiImageView.image = UIImage(named: emoji.imageName)
         trackerLabel.text = text
         containerCellView.backgroundColor = color
         plusButton.backgroundColor = color
         trackerId = idTrackers
+        isPinnedState = isPinned
+        pinIndicatorView.isHidden = !isPinned
+        pinIndicatorView.tintColor = .ypWhite
         
         let total = delegate?.completedDaysCount(for: idTrackers) ?? 0
-        daysLabel.text = "\(total) \(delegate?.dayString(for: total) ?? "дней")"
+        daysLabel.text = "\(total) \(delegate?.dayString(for: total) ?? "")"
         let isDoneToday = delegate?.isTrackerCompleted(for: idTrackers, on: date) ?? false
         plusButton.isSelected = isDoneToday
         updatePlusButtonAlpha()
     }
-    
-    
     
     //MARK: - Action
     @objc private func didTapPlusButton(){
@@ -226,5 +264,28 @@ final class TrackerCell: UICollectionViewCell {
         updatePlusButtonAlpha()
         guard let trackerId = trackerId else { return }
         delegate?.trackerCellDidTapPlus(self, id: trackerId)
+    }
+}
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard let id = trackerId else { return nil }
+        let pinTitle = isPinnedState ? Resources.Alert.actionUnpin.text : Resources.Alert.actionPin.text
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let pin = UIAction(title: pinTitle) { _ in
+                self.delegate?.didTogglePin(trackerId: id)
+            }
+            let edit = UIAction(title: Resources.Alert.actionEdit.text) { _ in
+                self.delegate?.didRequestEdit(trackerId: id)
+            }
+            let delete = UIAction(title: Resources.Alert.deleteConfirm.text,
+                                  attributes: .destructive) { _ in
+                self.delegate?.didRequestDelete(trackerId: id)
+            }
+            return UIMenu(title: "", children: [pin, edit, delete])
+        }
     }
 }

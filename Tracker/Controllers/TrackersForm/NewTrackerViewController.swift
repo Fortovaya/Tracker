@@ -108,12 +108,13 @@ final class NewTrackerViewController: BaseController {
         super.viewDidLoad()
         setupHelper()
         setupNewTrackerViewController()
+        setupEditTracker()
         updateSaveButtonState()
     }
     
     // MARK: - Private Methods
     private func setupNewTrackerViewController(){
-        if mode == .habit {
+        if case .habit = mode {
             view.addSubviews([inputTextField,buttonStackView, bottomButtonsStackView,styleCollectionView])
             [inputTextField, buttonStackView, bottomButtonsStackView].disableAutoresizingMask()
             
@@ -161,6 +162,21 @@ final class NewTrackerViewController: BaseController {
         setCenteredInlineTitle(title: mode.title)
     }
     
+    private func setupEditTracker(){
+        if case let .editHabit(tracker, category) = mode {
+            inputTextField.text = tracker.nameTrackers
+            trackerName = tracker.nameTrackers
+            selectedCategory = category
+            categoryButton.setSubtitle(category)
+            selectedEmoji = Resources.EmojiImage(rawValue: tracker.emojiTrackers)
+            selectedColor = tracker.colorTrackers
+            selectedDays = tracker.scheduleTrackers
+            orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
+            scheduleButton.setSubtitle(selectedDaysString)
+            saveButton.setTitle(Resources.TitleButtons.save.text, for: .normal)
+        }
+    }
+    
     private func isFormValid() -> Bool {
         guard let name = trackerName, !name.isEmpty,
               selectedCategory != nil,
@@ -168,7 +184,12 @@ final class NewTrackerViewController: BaseController {
               selectedColor != nil
         else { return false }
         
-        return mode == .event || !selectedDays.isEmpty
+        switch mode {
+            case .event:
+                return true
+            default:
+                return !selectedDays.isEmpty
+        }
     }
     
     private func updateSaveButtonState() {
@@ -192,7 +213,8 @@ final class NewTrackerViewController: BaseController {
             nameTrackers: name,
             colorTrackers: color,
             emojiTrackers: emoji.rawValue,
-            scheduleTrackers: days
+            scheduleTrackers: days,
+            isPinned: false
         )
         
         do {
@@ -226,18 +248,42 @@ final class NewTrackerViewController: BaseController {
     @objc private func didTapCancelButton(){
         dismissToRootModal()
     }
-        
+    
     @objc private func didTapSaveButton() {
         guard let name = trackerName,
               !name.isEmpty,
-              let category = selectedCategory
+              let category = selectedCategory,
+              let selectedColor = selectedColor,
+              let selectedEmoji = selectedEmoji
         else { return }
         
-        let days = mode == .habit ? selectedDays : [WeekDay.current]
+        let days: Set<WeekDay>
+        switch mode {
+            case .habit, .editHabit:
+                days = selectedDays
+            case .event:
+                days = [WeekDay.current]
+        }
+        
         guard !days.isEmpty else { return }
         
-        makeAndSaveTracker(name: name, category: category, days: days)
-        dismissToRootModal()
+        if case let .editHabit(original, oldCategory) = mode {
+            let updated = Tracker(
+                idTrackers: original.idTrackers,
+                nameTrackers: name,
+                colorTrackers: selectedColor,
+                emojiTrackers: selectedEmoji.rawValue,
+                scheduleTrackers: days,
+                isPinned: original.isPinned
+            )
+            
+            try? store.updateTracker(updated, newCategoryTitle: category)
+            delegate?.trackerCreationViewController(self, didEditTracker: updated, oldCategory: oldCategory)
+            dismissToRootModal()
+        } else {
+            makeAndSaveTracker(name: name, category: category, days: days)
+            dismissToRootModal()
+        }
     }
 }
 

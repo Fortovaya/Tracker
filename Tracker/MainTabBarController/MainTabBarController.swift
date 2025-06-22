@@ -39,7 +39,6 @@ final class MainTabBarController: UITabBarController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        overrideUserInterfaceStyle = .light
         viewControllers = [
             makeTab(for: .trackers),
             makeTab(for: .statistics)
@@ -48,14 +47,23 @@ final class MainTabBarController: UITabBarController {
         setupMainTabBarController()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setupMainTabBarController()
+    }
+    
     // MARK: Private Methods
     private func setupMainTabBarController() {
-        view.backgroundColor = .ypWhite
+        view.backgroundColor = .systemBackground
         tabBar.isTranslucent = false
         tabBar.tintColor = .ypBlue
         tabBar.unselectedItemTintColor = .ypGray
-        tabBar.layer.borderColor = UIColor.ypGray.cgColor
-        tabBar.layer.borderWidth = 0.5
+        if traitCollection.userInterfaceStyle == .dark {
+            tabBar.layer.borderWidth = 0
+        } else {
+            tabBar.layer.borderColor = UIColor.ypGray.cgColor
+            tabBar.layer.borderWidth = 0.5
+        }
         tabBar.layer.masksToBounds = true
     }
     
