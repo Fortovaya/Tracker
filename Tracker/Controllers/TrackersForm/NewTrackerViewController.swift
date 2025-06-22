@@ -252,7 +252,9 @@ final class NewTrackerViewController: BaseController {
     @objc private func didTapSaveButton() {
         guard let name = trackerName,
               !name.isEmpty,
-              let category = selectedCategory
+              let category = selectedCategory,
+              let selectedColor = selectedColor,
+              let selectedEmoji = selectedEmoji
         else { return }
         
         let days: Set<WeekDay>
@@ -269,8 +271,8 @@ final class NewTrackerViewController: BaseController {
             let updated = Tracker(
                 idTrackers: original.idTrackers,
                 nameTrackers: name,
-                colorTrackers: selectedColor!,
-                emojiTrackers: selectedEmoji!.rawValue,
+                colorTrackers: selectedColor,
+                emojiTrackers: selectedEmoji.rawValue,
                 scheduleTrackers: days,
                 isPinned: original.isPinned
             )
