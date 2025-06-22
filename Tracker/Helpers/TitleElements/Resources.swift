@@ -67,6 +67,7 @@ enum Resources {
         case statisticsTabBar = "hare"
         case clearButton = "xmark.circle"
         case checkmark = "checkmark"
+        case done = "done"
         
         var imageName: String { rawValue }
     }

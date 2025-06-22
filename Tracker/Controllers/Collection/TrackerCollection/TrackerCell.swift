@@ -79,13 +79,23 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
+    private lazy var plusButtonImageView: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(named: Resources.ButtonIcons.plus.imageName)
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.widthAnchor.constraint(equalToConstant: 10).isActive = true
+        image.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        return image
+    }()
+    
     private lazy var plusButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: Resources.ButtonIcons.plus.imageName), for: .normal)
-        button.setImage(UIImage(named: Resources.ButtonIcons.checkmark.imageName), for: .selected)
+        button.setImage(UIImage(named: Resources.ButtonIcons.done.imageName), for: .selected)
         button.tintColor = .ypWhite
         button.backgroundColor = containerCellView.backgroundColor
-        
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+
         [button].disableAutoresizingMask()
         
         NSLayoutConstraint.activate([
@@ -200,6 +210,9 @@ final class TrackerCell: UICollectionViewCell {
             plusButton.topAnchor.constraint(equalTo: emojiFooterView.topAnchor, constant: 8),
             plusButton.trailingAnchor.constraint(equalTo: emojiFooterView.trailingAnchor, constant: -12),
             plusButton.bottomAnchor.constraint(equalTo: emojiFooterView.bottomAnchor, constant: -16),
+            
+            plusButton.widthAnchor.constraint(equalToConstant: 34),
+            plusButton.heightAnchor.constraint(equalToConstant: 34),
             
             daysLabel.heightAnchor.constraint(equalToConstant: maxLabelHeight),
             daysLabel.centerYAnchor.constraint(equalTo: plusButton.centerYAnchor),
